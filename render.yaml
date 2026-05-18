@@ -1,0 +1,15 @@
+# Render Blueprint — static site (deploy via deploy hook; see deployment.yml)
+# Dashboard: New → Static Site → connect repo, or apply this blueprint once.
+services:
+  - type: web
+    name: isinkwa-sethu
+    runtime: static
+    rootDir: frontend
+    branch: deployment
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    autoDeployTrigger: off
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
