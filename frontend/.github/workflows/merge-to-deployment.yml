@@ -1,0 +1,426 @@
+name: Merge branch into deployment
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - master
+      - deployment
+      - dependabot/**
+      - renovate/**
+      - gh-readonly-queue/**
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - deployment
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: branch-deploy-pr-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  merge_into_deployment:
+    name: Merge into deployment
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'push' && github.actor != 'github-actions[bot]')
+    outputs:
+      should_trigger_deployment: ${{ steps.merge_deploy.outputs.should_trigger_deployment }}
+
+    steps:
+      - name: Checkout head branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && format('refs/heads/{0}', github.head_ref) || github.ref }}
+          fetch-depth: 0
+
+      - name: Open PR if needed, squash-merge when mergeable
+        id: merge_deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          wait_for_mergeable() {
+            local pr="$1"
+            local mergeable=""
+            for _ in $(seq 1 60); do
+              mergeable=$(gh pr view "$pr" -R "${{ github.repository }}" --json mergeable,state --jq '
+                if .state == "MERGED" then "ALREADY_MERGED"
+                else .mergeable end')
+              case "$mergeable" in
+                ALREADY_MERGED)
+                  echo "PR #${pr} is already merged."
+                  return 0
+                  ;;
+                MERGEABLE)
+                  echo "PR #${pr} is mergeable."
+                  return 0
+                  ;;
+                CONFLICTING)
+                  echo "::error::PR #${pr} has merge conflicts with deployment."
+                  return 1
+                  ;;
+                *)
+                  echo "mergeable=${mergeable:-UNKNOWN}; waiting…"
+                  sleep 2
+                  ;;
+              esac
+            done
+            echo "::error::PR #${pr} never became mergeable (last: ${mergeable})."
+            return 1
+          }
+          squash_merge_pr() {
+            local pr="$1"
+            if gh pr view "$pr" -R "${{ github.repository }}" --json state --jq -e '.state == "MERGED"' >/dev/null; then
+              echo "PR #${pr} already merged."
+              return 0
+            fi
+            if gh pr merge "$pr" -R "${{ github.repository }}" --squash --delete-branch=false; then
+              echo "Squash-merged PR #${pr} into deployment."
+              return 0
+            fi
+            if gh pr merge "$pr" -R "${{ github.repository }}" --merge --delete-branch=false; then
+              echo "Merge-committed PR #${pr} into deployment (squash unavailable)."
+              return 0
+            fi
+            echo "::error::Could not merge PR #${pr} into deployment."
+            return 1
+          }
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+            BRANCH_NAME="${{ github.head_ref }}"
+            echo "PR #${PR_NUMBER} opened/updated (${BRANCH_NAME} → deployment); squash-merge when ready."
+          else
+            BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+            git fetch origin deployment
+            AHEAD=$(git rev-list --count "origin/deployment..HEAD" || true)
+            if [ "${AHEAD:-0}" -eq 0 ]; then
+              echo "No commits on ${BRANCH_NAME} ahead of deployment — nothing to merge."
+              echo "should_trigger_deployment=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "${BRANCH_NAME} is ${AHEAD} commit(s) ahead of deployment."
+            PR_NUMBER=$(gh pr list \
+              -R "${{ github.repository }}" \
+              --base deployment \
+              --head "$BRANCH_NAME" \
+              --state open \
+              --json number \
+              --jq '.[0].number // empty')
+            if [ -z "$PR_NUMBER" ]; then
+              gh pr create \
+                -R "${{ github.repository }}" \
+                --base deployment \
+                --head "$BRANCH_NAME" \
+                --title "Promote ${BRANCH_NAME} → deployment" \
+                --body "Automated PR. Squash-merged by Actions when mergeable."
+              PR_NUMBER=$(gh pr list \
+                -R "${{ github.repository }}" \
+                --base deployment \
+                --head "$BRANCH_NAME" \
+                --state open \
+                --json number \
+                --jq '.[0].number // empty')
+            fi
+            if [ -z "$PR_NUMBER" ]; then
+              echo "::error::Could not determine PR number for ${BRANCH_NAME} → deployment."
+              exit 1
+            fi
+            echo "Using PR #${PR_NUMBER}."
+          fi
+          wait_for_mergeable "$PR_NUMBER"
+          squash_merge_pr "$PR_NUMBER"
+          echo "should_trigger_deployment=true" >> "$GITHUB_OUTPUT"
+          echo "Merge into deployment complete — deployment pipeline will run next."
+
+  auto-resolve-conflicts:
+    name: auto-resolve-conflicts
+    runs-on: ubuntu-latest
+    needs: merge_into_deployment
+    if: failure()
+    outputs:
+      should_trigger_deployment: ${{ steps.set_deploy_flag.outputs.should_trigger_deployment }}
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TARGET_BRANCH: deployment
+    steps:
+      - name: Checkout PR branch with full history
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine source branch and PR metadata
+        id: meta
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          SOURCE="${{ github.head_ref || github.ref_name }}"
+          echo "source_branch=${SOURCE}" >> "$GITHUB_OUTPUT"
+          echo "triggered_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+          PR_NUMBER=$(gh pr list \
+            -R "${{ github.repository }}" \
+            --base "${TARGET_BRANCH}" \
+            --head "${SOURCE}" \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty' || true)
+          echo "pr_number=${PR_NUMBER:-}" >> "$GITHUB_OUTPUT"
+
+      - name: Configure bot git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch target branch and attempt merge
+        id: merge
+        run: |
+          set -euo pipefail
+          SOURCE="${{ steps.meta.outputs.source_branch }}"
+          TARGET="${TARGET_BRANCH}"
+          echo "start_epoch=$(date +%s)" >> "$GITHUB_ENV"
+          echo "outcome=no conflicts" >> "$GITHUB_ENV"
+          echo "conflicted_files=0" >> "$GITHUB_ENV"
+          echo "conflicted_hunks=0" >> "$GITHUB_ENV"
+          echo "resolution_strategy=n/a" >> "$GITHUB_ENV"
+          echo "auto_merge_enabled=no" >> "$GITHUB_ENV"
+          echo "push_to_main=n/a" >> "$GITHUB_ENV"
+          : > /tmp/conflict_table.md
+          git fetch origin "${TARGET}"
+          if git merge "origin/${TARGET}" --no-edit; then
+            echo "merge_had_conflicts=false" >> "$GITHUB_OUTPUT"
+            echo "Merged origin/${TARGET} into ${SOURCE} without conflicts."
+          else
+            echo "merge_had_conflicts=true" >> "$GITHUB_OUTPUT"
+            if ! git diff --name-only --diff-filter=U | grep -q .; then
+              echo "::error::git merge failed but no unmerged paths found."
+              exit 1
+            fi
+            echo "outcome=conflicts found" >> "$GITHUB_ENV"
+            git diff --diff-filter=U --unified=0 > /tmp/conflict_diff.txt || true
+            {
+              echo "| File | Conflict ranges |"
+              echo "|---|---|"
+            } > /tmp/conflict_table.md
+            file_count=0
+            hunk_count=0
+            current_file=""
+            current_hunks=""
+            flush_row() {
+              if [ -n "$current_file" ]; then
+                echo "| \`${current_file}\` | ${current_hunks:-_(hunk headers unavailable)_} |" >> /tmp/conflict_table.md
+                file_count=$((file_count + 1))
+              fi
+            }
+            while IFS= read -r line || [ -n "$line" ]; do
+              case "$line" in
+                +++\ b/*)
+                  flush_row
+                  current_file="${line#+++ b/}"
+                  current_hunks=""
+                  ;;
+                @@*)
+                  if [ -n "$current_hunks" ]; then
+                    current_hunks="${current_hunks} / ${line}"
+                  else
+                    current_hunks="${line}"
+                  fi
+                  hunk_count=$((hunk_count + 1))
+                  ;;
+              esac
+            done < /tmp/conflict_diff.txt
+            flush_row
+            if [ "$file_count" -eq 0 ]; then
+              while IFS= read -r f; do
+                [ -z "$f" ] && continue
+                echo "| \`${f}\` | _(see conflict markers)_ |" >> /tmp/conflict_table.md
+                file_count=$((file_count + 1))
+              done < <(git diff --name-only --diff-filter=U)
+            fi
+            echo "conflicted_files=${file_count}" >> "$GITHUB_ENV"
+            echo "conflicted_hunks=${hunk_count}" >> "$GITHUB_ENV"
+            git checkout --theirs .
+            git add -A
+            git commit -m "chore(ci): auto-resolve merge conflicts (accept ${TARGET})"
+            echo "outcome=conflicts found" >> "$GITHUB_ENV"
+            echo "resolution_strategy=accept incoming / --theirs" >> "$GITHUB_ENV"
+          fi
+          echo "end_epoch=$(date +%s)" >> "$GITHUB_ENV"
+          echo "final_sha=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Preserve source-branch workflow files before push
+        run: |
+          set -euo pipefail
+          SOURCE="${{ steps.meta.outputs.source_branch }}"
+          git fetch origin "${SOURCE}"
+          if git ls-tree -r --name-only "origin/${SOURCE}" -- .github/workflows 2>/dev/null | grep -q .; then
+            git checkout "origin/${SOURCE}" -- .github/workflows/
+            git add .github/workflows/
+            if ! git diff --cached --quiet; then
+              git commit -m "chore(ci): preserve source-branch workflow files for Actions push"
+            fi
+          fi
+
+      - name: Push resolved branch to origin
+        run: |
+          set -euo pipefail
+          git push origin "HEAD:${{ steps.meta.outputs.source_branch }}"
+
+      - name: Merge PR into deployment (squash or merge commit)
+        id: automerge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          PR="${{ steps.meta.outputs.pr_number }}"
+          if [ -z "$PR" ]; then
+            PR=$(gh pr list \
+              -R "${{ github.repository }}" \
+              --base "${TARGET_BRANCH}" \
+              --head "${{ steps.meta.outputs.source_branch }}" \
+              --state open \
+              --json number \
+              --jq '.[0].number // empty')
+          fi
+          if [ -z "$PR" ]; then
+            echo "::warning::No open PR found; branch was pushed — open/merge the PR manually if needed."
+            echo "auto_merge_enabled=no" >> "$GITHUB_ENV"
+            exit 0
+          fi
+          if gh pr merge "$PR" --squash; then
+            echo "Merged PR #${PR} into ${TARGET_BRANCH} (squash)."
+            echo "auto_merge_enabled=yes (direct squash)" >> "$GITHUB_ENV"
+          elif gh pr merge "$PR" --merge; then
+            echo "Merged PR #${PR} into ${TARGET_BRANCH} (merge commit)."
+            echo "auto_merge_enabled=yes (direct merge)" >> "$GITHUB_ENV"
+          elif gh pr merge "$PR" --auto --squash; then
+            echo "Queued auto-merge (squash) for PR #${PR}."
+            echo "auto_merge_enabled=yes (auto)" >> "$GITHUB_ENV"
+            for _ in $(seq 1 60); do
+              STATE=$(gh pr view "$PR" -R "${{ github.repository }}" --json state --jq -r '.state')
+              if [ "$STATE" = "MERGED" ]; then
+                echo "PR #${PR} auto-merge completed."
+                break
+              fi
+              sleep 5
+            done
+          else
+            echo "::error::Could not merge PR #${PR} into ${TARGET_BRANCH} (check branch protection or required reviews)."
+            exit 1
+          fi
+
+      - name: Set deployment trigger flag after conflict resolution
+        id: set_deploy_flag
+        if: steps.automerge.outcome == 'success'
+        env:
+          AUTO_MERGE_ENABLED: ${{ env.auto_merge_enabled }}
+        run: |
+          set -euo pipefail
+          case "${AUTO_MERGE_ENABLED:-no}" in
+            yes*)
+              echo "should_trigger_deployment=true" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "should_trigger_deployment=false" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+      - name: Write conflict resolution summary
+        if: always()
+        env:
+          SOURCE_BRANCH: ${{ steps.meta.outputs.source_branch }}
+          PR_NUMBER: ${{ steps.meta.outputs.pr_number }}
+          TRIGGERED_AT: ${{ steps.meta.outputs.triggered_at }}
+        run: |
+          set -euo pipefail
+          START="${start_epoch:-0}"
+          END="${end_epoch:-0}"
+          DUR=$((END - START))
+          DM=$((DUR / 60))
+          DS=$((DUR % 60))
+          DURATION="${DM}m ${DS}s"
+          {
+            echo "### Conflict Resolution Summary"
+            echo ""
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| PR number | ${PR_NUMBER:-_(none)_} |"
+            echo "| Source branch | \`${SOURCE_BRANCH}\` |"
+            echo "| Target branch | \`${TARGET_BRANCH}\` |"
+            echo "| Triggered at (UTC) | ${TRIGGERED_AT} |"
+            echo "| Outcome | ${outcome:-unknown} |"
+            echo ""
+            if [ -f /tmp/conflict_table.md ] && [ -s /tmp/conflict_table.md ]; then
+              echo "#### Conflicted files (pre-resolution)"
+              echo ""
+              cat /tmp/conflict_table.md
+              echo ""
+            fi
+            echo "#### Metrics"
+            echo ""
+            echo "| Metric | Value |"
+            echo "|---|---|"
+            echo "| Number of conflicted files | ${conflicted_files:-0} |"
+            echo "| Total conflicted line ranges | ${conflicted_hunks:-0} |"
+            echo "| Resolution duration | ${DURATION} |"
+            echo "| Resolution strategy | ${resolution_strategy:-n/a} |"
+            echo "| Final commit SHA after resolution | \`${final_sha:-unknown}\` |"
+            echo "| Auto-merge enabled | ${auto_merge_enabled:-no} |"
+            echo ""
+            echo "_Conflicted lines shown are pre-resolution; all were resolved by accepting target branch changes._"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  trigger_deployment:
+    name: Trigger deployment pipeline
+    runs-on: ubuntu-latest
+    needs: [merge_into_deployment, auto-resolve-conflicts]
+    if: |
+      always() &&
+      (
+        (needs.merge_into_deployment.result == 'success' && needs.merge_into_deployment.outputs.should_trigger_deployment == 'true') ||
+        (needs.auto-resolve-conflicts.result == 'success' && needs.auto-resolve-conflicts.outputs.should_trigger_deployment == 'true')
+      )
+    permissions:
+      actions: write
+    steps:
+      - name: Dispatch deployment workflow on deployment branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          REPO="${{ github.repository }}"
+          echo "deployment branch should include the latest merge — starting deployment workflow."
+          sleep 15
+          for attempt in 1 2 3; do
+            echo "Dispatch attempt ${attempt}/3…"
+            if gh workflow run deployment.yml --ref deployment -R "$REPO"; then
+              sleep 8
+              echo "Recent deployment workflow runs:"
+              gh run list --workflow=deployment.yml --branch=deployment -L 5 -R "$REPO" || true
+              exit 0
+            fi
+            echo "Dispatch failed; retrying…"
+            sleep 10
+          done
+          echo "::error::Could not dispatch deployment.yml on ref deployment after 3 attempts."
+          exit 1
+
+      - name: Summary
+        run: |
+          {
+            echo "### Deployment pipeline triggered"
+            echo ""
+            echo "Started \`deployment.yml\` on branch \`deployment\` after merge (Render deploy → promote to main → main CI)."
+          } >> "$GITHUB_STEP_SUMMARY"
