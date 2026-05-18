@@ -382,8 +382,8 @@ jobs:
             echo "_Conflicted lines shown are pre-resolution; all were resolved by accepting target branch changes._"
           } >> "$GITHUB_STEP_SUMMARY"
 
-  trigger_deployment:
-    name: Trigger deployment pipeline
+  deployment_queued:
+    name: Deployment will run on deployment_push push
     runs-on: ubuntu-latest
     needs: [merge_into_deployment, auto-resolve-conflicts]
     if: |
@@ -392,35 +392,13 @@ jobs:
         (needs.merge_into_deployment.result == 'success' && needs.merge_into_deployment.outputs.should_trigger_deployment == 'true') ||
         (needs.auto-resolve-conflicts.result == 'success' && needs.auto-resolve-conflicts.outputs.should_trigger_deployment == 'true')
       )
-    permissions:
-      actions: write
     steps:
-      - name: Dispatch deployment workflow on deployment_push branch
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          REPO="${{ github.repository }}"
-          echo "deployment_push branch should include the latest merge — starting deployment workflow."
-          sleep 15
-          for attempt in 1 2 3; do
-            echo "Dispatch attempt ${attempt}/3…"
-            if gh workflow run deployment.yml --ref deployment_push -R "$REPO"; then
-              sleep 8
-              echo "Recent deployment workflow runs:"
-              gh run list --workflow=deployment.yml --branch=deployment_push -L 5 -R "$REPO" || true
-              exit 0
-            fi
-            echo "Dispatch failed; retrying…"
-            sleep 10
-          done
-          echo "::error::Could not dispatch deployment.yml on ref deployment_push after 3 attempts."
-          exit 1
-
       - name: Summary
         run: |
           {
-            echo "### Deployment pipeline triggered"
+            echo "### Deployment pipeline"
             echo ""
-            echo "Started \`deployment.yml\` on branch \`deployment_push\` after merge (Render deploy → promote to main → main CI)."
+            echo "Merge into \`deployment_push\` completed. **Deployment** runs automatically from the push to \`deployment_push\` (Render deploy → promote to main)."
+            echo ""
+            echo "Check the **Deployment** workflow in the Actions tab."
           } >> "$GITHUB_STEP_SUMMARY"
