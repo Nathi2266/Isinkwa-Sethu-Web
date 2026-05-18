@@ -22,10 +22,10 @@ jobs:
       deploy_succeeded: ${{ steps.deploy_wait.outputs.deploy_succeeded }}
 
     steps:
-      - name: Checkout deployment branch
+      - name: Checkout deployment_push branch
         uses: actions/checkout@v4
         with:
-          ref: deployment
+          ref: deployment_push
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -71,20 +71,20 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   promote_to_main:
-    name: Promote deployment to main
+    name: Promote deployment_push to main
     runs-on: ubuntu-latest
     needs: build_and_deploy
     if: needs.build_and_deploy.outputs.deploy_succeeded == 'true'
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      SOURCE_BRANCH: deployment
+      SOURCE_BRANCH: deployment_push
       TARGET_BRANCH: main
 
     steps:
-      - name: Checkout deployment branch
+      - name: Checkout deployment_push branch
         uses: actions/checkout@v4
         with:
-          ref: deployment
+          ref: deployment_push
           fetch-depth: 0
 
       - name: Open or reuse PR, squash-merge into main
@@ -140,11 +140,11 @@ jobs:
           git fetch origin "${TARGET_BRANCH}" "${SOURCE_BRANCH}"
           AHEAD=$(git rev-list --count "origin/${TARGET_BRANCH}..origin/${SOURCE_BRANCH}" || true)
           if [ "${AHEAD:-0}" -eq 0 ]; then
-            echo "deployment has no commits ahead of main — nothing to promote."
+            echo "deployment_push has no commits ahead of main — nothing to promote."
             echo "promoted=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          echo "deployment is ${AHEAD} commit(s) ahead of main."
+          echo "deployment_push is ${AHEAD} commit(s) ahead of main."
 
           PR_NUMBER=$(gh pr list \
             -R "${{ github.repository }}" \
@@ -158,7 +158,7 @@ jobs:
               -R "${{ github.repository }}" \
               --base "${TARGET_BRANCH}" \
               --head "${SOURCE_BRANCH}" \
-              --title "Promote deployment → main (post-deploy)" \
+              --title "Promote deployment_push → main (post-deploy)" \
               --body "Automated PR after successful Render deploy. Squash-merged by Actions when mergeable."
             PR_NUMBER=$(gh pr list \
               -R "${{ github.repository }}" \
@@ -186,7 +186,7 @@ jobs:
             echo ""
             echo "| Field | Value |"
             echo "|---|---|"
-            echo "| Source | \`deployment\` |"
+            echo "| Source | \`deployment_push\` |"
             echo "| Target | \`main\` |"
             echo "| Promoted | ${{ steps.promote.outputs.promoted || 'n/a' }} |"
             echo "| PR | ${{ steps.promote.outputs.promoted_pr || 'n/a' }} |"
