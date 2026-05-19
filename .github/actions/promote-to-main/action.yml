@@ -9,6 +9,7 @@ runs:
       with:
         ref: deployment_push
         fetch-depth: 0
+        token: ${{ github.token }}
 
     - name: Open or reuse PR, squash-merge into main
       id: promote
@@ -19,6 +20,7 @@ runs:
         TARGET_BRANCH: main
       run: |
         set -euo pipefail
+
         wait_for_mergeable() {
           local pr="$1"
           local mergeable=""
@@ -36,8 +38,8 @@ runs:
                 return 0
                 ;;
               CONFLICTING)
-                echo "::error::PR #${pr} has merge conflicts with main."
-                return 1
+                echo "PR #${pr} has merge conflicts with main."
+                return 2
                 ;;
               *)
                 echo "mergeable=${mergeable:-UNKNOWN}; waiting…"
@@ -48,6 +50,39 @@ runs:
           echo "::error::PR #${pr} never became mergeable."
           return 1
         }
+
+        resolve_conflicts_on_source() {
+          echo "Merging origin/${TARGET_BRANCH} into ${SOURCE_BRANCH} and keeping deployment layout…"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin "${TARGET_BRANCH}" "${SOURCE_BRANCH}"
+          git checkout "${SOURCE_BRANCH}"
+
+          if git merge "origin/${TARGET_BRANCH}" --no-edit; then
+            echo "Clean merge of ${TARGET_BRANCH} into ${SOURCE_BRANCH}."
+          else
+            if ! git diff --name-only --diff-filter=U | grep -q .; then
+              echo "::error::git merge failed but no unmerged paths were found."
+              git merge --abort 2>/dev/null || true
+              return 1
+            fi
+            echo "Resolving conflicts by keeping ${SOURCE_BRANCH} (deployed) versions…"
+            git checkout --ours .
+            git add -A
+            if git ls-files | grep -q '^frontend/'; then
+              git rm -rf frontend 2>/dev/null || true
+            fi
+            if git ls-files | grep -q '^node_modules/'; then
+              git rm -rf node_modules 2>/dev/null || true
+            fi
+            git add -A
+            git commit -m "chore(ci): resolve promote-to-main conflicts (keep ${SOURCE_BRANCH})"
+          fi
+
+          git push origin "HEAD:${SOURCE_BRANCH}"
+          echo "Pushed updated ${SOURCE_BRANCH} for PR reconciliation."
+        }
+
         merge_pr() {
           local pr="$1"
           if gh pr view "$pr" -R "${{ github.repository }}" --json state --jq -e '.state == "MERGED"' >/dev/null; then
@@ -101,7 +136,18 @@ runs:
           exit 1
         fi
         echo "Using PR #${PR_NUMBER}."
+
+        set +e
         wait_for_mergeable "$PR_NUMBER"
+        WAIT_STATUS=$?
+        set -e
+        if [ "$WAIT_STATUS" -eq 2 ]; then
+          resolve_conflicts_on_source
+          wait_for_mergeable "$PR_NUMBER"
+        elif [ "$WAIT_STATUS" -ne 0 ]; then
+          exit "$WAIT_STATUS"
+        fi
+
         merge_pr "$PR_NUMBER"
         echo "promoted=true" >> "$GITHUB_OUTPUT"
         echo "promoted_pr=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
