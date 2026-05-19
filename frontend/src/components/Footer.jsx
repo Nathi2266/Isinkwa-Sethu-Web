@@ -1,20 +1,21 @@
+import { Link } from 'react-router-dom'
 import { Instagram, Linkedin, Mail, Twitter, Youtube } from 'lucide-react'
 
 const footerLinks = {
   About: [
-    { label: 'Our Story', href: '#about' },
-    { label: 'Vision', href: '#vision' },
-    { label: 'Timeline', href: '#storytelling' },
+    { label: 'Our Story', path: '/about' },
+    { label: 'Vision', path: '/vision' },
+    { label: 'Timeline', path: '/vision' },
   ],
   Mission: [
-    { label: 'Ownership Model', href: '#ownership' },
-    { label: 'R370 Concept', href: '#r370' },
-    { label: 'Impact', href: '#impact' },
+    { label: 'Ownership Model', path: '/ownership' },
+    { label: 'R370 Concept', path: '/ownership' },
+    { label: 'Impact', path: '/impact' },
   ],
   Legal: [
-    { label: 'Privacy Policy', href: '#' },
-    { label: 'Terms of Use', href: '#' },
-    { label: 'Governance', href: '#' },
+    { label: 'Privacy Policy', path: '#' },
+    { label: 'Terms of Use', path: '#' },
+    { label: 'Governance', path: '#' },
   ],
 }
 
@@ -34,13 +35,13 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer id="contact" className="border-t border-gold/10 bg-black/50 section-padding pb-10">
+    <footer className="border-t border-gold/10 bg-black/50 section-padding pb-10">
       <div className="container-narrow">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
-            <a href="#" className="font-display text-2xl font-bold text-cream">
+            <Link to="/" className="font-display text-2xl font-bold text-cream">
               Isinkwa Sethu
-            </a>
+            </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-cream/60">
               A digital economic movement for community ownership — building township empowerment
               through collective investment and shared futures.
@@ -70,12 +71,21 @@ export default function Footer() {
               <ul className="mt-4 space-y-3">
                 {links.map((link) => (
                   <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-sm text-cream/60 transition-colors hover:text-gold"
-                    >
-                      {link.label}
-                    </a>
+                    {link.path.startsWith('/') ? (
+                      <Link
+                        to={link.path}
+                        className="text-sm text-cream/60 transition-colors hover:text-gold"
+                      >
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <a
+                        href={link.path}
+                        className="text-sm text-cream/60 transition-colors hover:text-gold"
+                      >
+                        {link.label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -92,6 +102,11 @@ export default function Footer() {
                 <a href="mailto:hello@isinkwasethu.org" className="hover:text-gold">
                   hello@isinkwasethu.org
                 </a>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-gold">
+                  Contact page
+                </Link>
               </li>
               <li>South Africa</li>
             </ul>

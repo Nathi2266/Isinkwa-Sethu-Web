@@ -13,7 +13,7 @@ function Metric({ end, suffix, label }) {
 
 export default function Impact() {
   return (
-    <SectionReveal className="section-padding" id="impact">
+    <SectionReveal className="section-padding">
       <div className="container-narrow">
         <div className="glass overflow-hidden rounded-3xl border border-gold/15 p-10 sm:p-16 lg:p-20">
           <FadeItem>
