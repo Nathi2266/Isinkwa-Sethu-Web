@@ -11,7 +11,12 @@ DEFAULT_CORS = (
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+        case_sensitive=False,
+    )
 
     # SQLite by default for local dev without Docker/Postgres
     database_url: str = "sqlite:///./isinkwa_sethu.db"
