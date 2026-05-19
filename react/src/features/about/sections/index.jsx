@@ -62,14 +62,14 @@ export function OriginStory() {
 
 export function VisionStatement() {
   return (
-    <SectionReveal className="section-padding bg-black/30">
+    <SectionReveal className="section-padding bg-section-muted">
       <div className="container-narrow">
         <FadeItem className="mx-auto max-w-4xl text-center">
           <blockquote className="font-display text-3xl font-bold leading-snug text-cream sm:text-4xl lg:text-5xl">
             &ldquo;The future belongs to communities that{' '}
             <span className="text-gradient-gold">own together</span>.&rdquo;
           </blockquote>
-          <p className="mt-8 text-lead text-cream/60">
+          <p className="mt-8 text-lead text-theme-muted">
             Economic liberation starts when ownership replaces dependency.
           </p>
         </FadeItem>
@@ -111,11 +111,11 @@ export function WhyOwnership() {
             return (
               <FadeItem key={p.title}>
                 <GlassCard className="h-full p-8">
-                  <div className="mb-5 inline-flex rounded-xl border border-gold/20 bg-gold/10 p-3 text-gold">
+                  <div className="mb-5 inline-flex rounded-xl border border-gold/20 bg-gold/10 p-3 text-icon-accent">
                     <Icon className="size-6" />
                   </div>
                   <h3 className="font-display text-xl font-semibold text-cream">{p.title}</h3>
-                  <p className="mt-3 text-sm text-cream/65">{p.description}</p>
+                  <p className="mt-3 text-sm text-theme-muted">{p.description}</p>
                 </GlassCard>
               </FadeItem>
             )
@@ -128,7 +128,7 @@ export function WhyOwnership() {
 
 export function ImpactPreview() {
   return (
-    <SectionReveal className="section-padding bg-black/30">
+    <SectionReveal className="section-padding bg-section-muted">
       <div className="container-narrow editorial-grid">
         <FadeItem className="lg:col-span-5">
           <SectionHeader
@@ -140,7 +140,7 @@ export function ImpactPreview() {
           />
           <Link
             to="/impact"
-            className="mt-6 inline-block text-sm font-semibold text-gold hover:text-cream"
+            className="mt-6 inline-block text-sm font-semibold text-gold hover:text-foreground"
           >
             Explore impact →
           </Link>

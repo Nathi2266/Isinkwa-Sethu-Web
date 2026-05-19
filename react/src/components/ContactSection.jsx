@@ -41,28 +41,28 @@ export default function ContactSection() {
           <FadeItem>
             <div className="glass rounded-2xl p-8 sm:p-10">
               <h2 className="font-display text-2xl font-bold text-cream">Get In Touch</h2>
-              <p className="mt-4 text-cream/70">
+              <p className="mt-4 text-theme-muted">
                 Whether you want to join, partner, or learn more — we would love to hear from you.
               </p>
               <ul className="mt-8 space-y-5">
-                <li className="flex items-start gap-3 text-cream/75">
-                  <Mail className="mt-0.5 size-5 shrink-0 text-gold" aria-hidden="true" />
+                <li className="flex items-start gap-3 text-theme-muted">
+                  <Mail className="mt-0.5 size-5 shrink-0 text-icon-accent" aria-hidden="true" />
                   <div>
                     <p className="text-sm font-medium text-cream">Email</p>
-                    <a href={`mailto:${site.contact.email}`} className="text-sm hover:text-gold">
+                    <a href={`mailto:${site.contact.email}`} className="text-sm hover:text-icon-accent">
                       {site.contact.email}
                     </a>
                   </div>
                 </li>
-                <li className="flex items-start gap-3 text-cream/75">
-                  <MapPin className="mt-0.5 size-5 shrink-0 text-gold" aria-hidden="true" />
+                <li className="flex items-start gap-3 text-theme-muted">
+                  <MapPin className="mt-0.5 size-5 shrink-0 text-icon-accent" aria-hidden="true" />
                   <div>
                     <p className="text-sm font-medium text-cream">Location</p>
                     <p className="text-sm">{site.contact.location}</p>
                   </div>
                 </li>
-                <li className="flex items-start gap-3 text-cream/75">
-                  <MessageSquare className="mt-0.5 size-5 shrink-0 text-gold" aria-hidden="true" />
+                <li className="flex items-start gap-3 text-theme-muted">
+                  <MessageSquare className="mt-0.5 size-5 shrink-0 text-icon-accent" aria-hidden="true" />
                   <div>
                     <p className="text-sm font-medium text-cream">Response time</p>
                     <p className="text-sm">We aim to reply within 2–3 business days.</p>
@@ -81,7 +81,7 @@ export default function ContactSection() {
               <h2 className="font-display text-2xl font-bold text-cream">Send A Message</h2>
               <div className="mt-6 space-y-4">
                 <div>
-                  <label htmlFor="contact-name" className="mb-1.5 block text-sm font-medium text-cream/80">
+                  <label htmlFor="contact-name" className="mb-1.5 block text-sm font-medium text-theme-muted">
                     Name
                   </label>
                   <input
@@ -89,12 +89,12 @@ export default function ContactSection() {
                     name="name"
                     type="text"
                     required
-                    className="w-full rounded-lg border border-gold/20 bg-black/40 px-4 py-3 text-sm text-cream placeholder:text-cream/40 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
+                    className="w-full rounded-lg border border-gold/20 bg-input px-4 py-3 text-sm text-foreground placeholder:text-theme-subtle focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
                     placeholder="Your name"
                   />
                 </div>
                 <div>
-                  <label htmlFor="contact-email" className="mb-1.5 block text-sm font-medium text-cream/80">
+                  <label htmlFor="contact-email" className="mb-1.5 block text-sm font-medium text-theme-muted">
                     Email
                   </label>
                   <input
@@ -102,12 +102,12 @@ export default function ContactSection() {
                     name="email"
                     type="email"
                     required
-                    className="w-full rounded-lg border border-gold/20 bg-black/40 px-4 py-3 text-sm text-cream placeholder:text-cream/40 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
+                    className="w-full rounded-lg border border-gold/20 bg-input px-4 py-3 text-sm text-foreground placeholder:text-theme-subtle focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
                     placeholder="you@example.com"
                   />
                 </div>
                 <div>
-                  <label htmlFor="contact-message" className="mb-1.5 block text-sm font-medium text-cream/80">
+                  <label htmlFor="contact-message" className="mb-1.5 block text-sm font-medium text-theme-muted">
                     Message
                   </label>
                   <textarea
@@ -115,7 +115,7 @@ export default function ContactSection() {
                     name="message"
                     rows={5}
                     required
-                    className="w-full resize-y rounded-lg border border-gold/20 bg-black/40 px-4 py-3 text-sm text-cream placeholder:text-cream/40 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
+                    className="w-full resize-y rounded-lg border border-gold/20 bg-input px-4 py-3 text-sm text-foreground placeholder:text-theme-subtle focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
                     placeholder="How can we help?"
                   />
                 </div>

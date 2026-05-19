@@ -27,11 +27,11 @@ export default function MediaFrame({
       <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
         {showPlay && (
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-gold/40 bg-gold/10 transition-colors group-hover:bg-gold/20">
-            <Play className="size-7 text-gold" fill="currentColor" />
+            <Play className="size-7 text-icon-accent" fill="currentColor" />
           </div>
         )}
-        {label && <p className="text-sm font-medium text-cream/70">{label}</p>}
-        {sublabel && <p className="mt-1 text-xs text-cream/45">{sublabel}</p>}
+        {label && <p className="text-sm font-medium text-theme-muted">{label}</p>}
+        {sublabel && <p className="mt-1 text-xs text-theme-subtle">{sublabel}</p>}
       </div>
     </motion.div>
   )

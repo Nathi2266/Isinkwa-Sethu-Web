@@ -12,7 +12,7 @@ function StatCard({ end, prefix, suffix, label, decimals = 0 }) {
       className="glass glow-gold-hover rounded-2xl p-8 text-center transition-shadow duration-300"
     >
       <p className="font-display text-3xl font-bold text-gold sm:text-4xl">{display}</p>
-      <p className="mt-3 text-sm text-cream/70">{label}</p>
+      <p className="mt-3 text-sm text-theme-muted">{label}</p>
     </motion.article>
   )
 }
@@ -25,7 +25,7 @@ export default function Stats() {
           <h2 className="font-display text-3xl font-bold text-cream sm:text-4xl">
             Movement By The Numbers
           </h2>
-          <p className="mt-4 text-cream/65">Collective power measured in vision, people, and impact.</p>
+          <p className="mt-4 text-theme-muted">Collective power measured in vision, people, and impact.</p>
         </FadeItem>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <FadeItem>

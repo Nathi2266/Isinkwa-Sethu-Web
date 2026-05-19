@@ -17,13 +17,13 @@ import { cn } from '@/lib/utils'
 const navLinkClass = ({ isActive }) =>
   cn(
     'text-sm font-medium transition-colors',
-    isActive ? 'text-gold' : 'text-cream/80 hover:text-gold'
+    isActive ? 'text-icon-accent' : 'text-theme-muted hover:text-icon-accent'
   )
 
 const mobileNavLinkClass = ({ isActive }) =>
   cn(
     'font-display text-lg transition-colors',
-    isActive ? 'text-gold' : 'text-cream hover:text-gold'
+    isActive ? 'text-icon-accent' : 'text-cream hover:text-icon-accent'
   )
 
 export default function Navbar() {
@@ -45,7 +45,7 @@ export default function Navbar() {
       >
         <Link
           to="/"
-          className="font-display text-lg font-bold tracking-tight text-cream transition-colors hover:text-gold sm:text-xl"
+          className="font-display text-lg font-bold tracking-tight text-cream transition-colors hover:text-icon-accent sm:text-xl"
         >
           Isinkwa Sethu
         </Link>

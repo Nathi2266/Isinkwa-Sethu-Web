@@ -14,14 +14,14 @@ const descriptions = {
 
 export default function ExploreNav() {
   return (
-    <SectionReveal className="section-padding bg-black/30">
+    <SectionReveal className="section-padding bg-section-muted">
       <div className="container-narrow">
         <FadeItem className="mb-12 text-center">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gold">Explore</p>
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-icon-accent">Explore</p>
           <h2 className="font-display text-3xl font-bold text-cream sm:text-4xl">
             Discover The Movement
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-cream/65">
+          <p className="mx-auto mt-4 max-w-2xl text-theme-muted">
             Each part of Isinkwa Sethu has its own space — dive into what matters most to you.
           </p>
         </FadeItem>
@@ -33,13 +33,13 @@ export default function ExploreNav() {
                 to={link.path}
                 className="glass glow-gold-hover group flex h-full flex-col rounded-2xl p-6 transition-colors"
               >
-                <h3 className="font-display text-lg font-semibold text-cream group-hover:text-gold">
+                <h3 className="font-display text-lg font-semibold text-cream group-hover:text-icon-accent">
                   {link.label}
                 </h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-cream/60">
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-theme-muted">
                   {descriptions[link.label]}
                 </p>
-                <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-gold">
+                <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-icon-accent">
                   Learn more
                   <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                 </span>

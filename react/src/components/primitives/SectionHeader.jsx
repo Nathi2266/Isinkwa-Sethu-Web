@@ -14,10 +14,10 @@ export default function SectionHeader({
   return (
     <FadeItem className={cn('mb-12 max-w-3xl', alignClass, className)}>
       {eyebrow && (
-        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-gold">{eyebrow}</p>
+        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-icon-accent">{eyebrow}</p>
       )}
       <h2 className="font-display text-display font-bold text-cream text-balance">{title}</h2>
-      {lead && <p className="mt-4 text-lead text-cream/65 text-balance">{lead}</p>}
+      {lead && <p className="mt-4 text-lead text-theme-muted text-balance">{lead}</p>}
     </FadeItem>
   )
 }

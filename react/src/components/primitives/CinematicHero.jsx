@@ -53,7 +53,7 @@ export default function CinematicHero({
               initial="hidden"
               animate="visible"
               variants={heroLine}
-              className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-gold"
+              className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-icon-accent"
             >
               {eyebrow}
             </motion.p>
@@ -75,7 +75,7 @@ export default function CinematicHero({
               initial="hidden"
               animate="visible"
               variants={heroLine}
-              className="mt-6 max-w-xl text-lead text-cream/75"
+              className="mt-6 max-w-xl text-lead text-theme-muted"
             >
               {description}
             </motion.p>

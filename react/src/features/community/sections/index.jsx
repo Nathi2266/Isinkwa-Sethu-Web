@@ -55,7 +55,7 @@ export function FeaturedStory() {
       <div className="container-narrow">
         <FadeItem>
           <GlassCard hover={false} className="p-10 sm:p-16 lg:p-20">
-            <p className="text-sm font-semibold uppercase tracking-widest text-gold">Featured Story</p>
+            <p className="text-sm font-semibold uppercase tracking-widest text-icon-accent">Featured Story</p>
             <blockquote className="mt-6 font-display text-2xl font-bold leading-snug text-cream sm:text-3xl lg:text-4xl">
               &ldquo;{featured.quote}&rdquo;
             </blockquote>
@@ -63,7 +63,7 @@ export function FeaturedStory() {
               <div className="h-14 w-14 rounded-full bg-gradient-to-br from-gold/30 to-brown/40" />
               <div>
                 <cite className="font-display font-semibold not-italic text-cream">{featured.name}</cite>
-                <p className="text-sm text-cream/50">{featured.role}</p>
+                <p className="text-sm text-theme-subtle">{featured.role}</p>
               </div>
             </footer>
           </GlassCard>
@@ -75,7 +75,7 @@ export function FeaturedStory() {
 
 export function StoriesCarousel() {
   return (
-    <SectionReveal className="section-padding bg-black/30">
+    <SectionReveal className="section-padding bg-section-muted">
       <div className="container-narrow">
         <SectionHeader eyebrow="Stories" title="Members Building The Future" />
         <Carousel className="px-12">
@@ -83,10 +83,10 @@ export function StoriesCarousel() {
             {testimonials.map((t) => (
               <CarouselItem key={t.name} className="md:basis-1/2 lg:basis-1/3">
                 <GlassCard className="flex h-full flex-col p-8">
-                  <span className="text-xs font-semibold uppercase text-gold">{t.category}</span>
-                  <p className="mt-4 flex-1 text-sm leading-relaxed text-cream/80">&ldquo;{t.quote}&rdquo;</p>
+                  <span className="text-xs font-semibold uppercase text-icon-accent">{t.category}</span>
+                  <p className="mt-4 flex-1 text-sm leading-relaxed text-theme-muted">&ldquo;{t.quote}&rdquo;</p>
                   <p className="mt-6 font-display text-sm font-semibold text-cream">{t.name}</p>
-                  <p className="text-xs text-cream/50">{t.role}</p>
+                  <p className="text-xs text-theme-subtle">{t.role}</p>
                 </GlassCard>
               </CarouselItem>
             ))}
@@ -110,8 +110,8 @@ export function ProfileGrid() {
               <GlassCard className="p-6 text-center">
                 <div className="mx-auto h-20 w-20 rounded-full bg-gradient-to-br from-gold/20 to-green/10" />
                 <h3 className="mt-4 font-display font-semibold text-cream">{p.name}</h3>
-                <p className="text-sm text-cream/60">{p.role}</p>
-                <span className="mt-2 inline-block rounded-full border border-gold/20 px-2 py-0.5 text-xs text-gold">
+                <p className="text-sm text-theme-muted">{p.role}</p>
+                <span className="mt-2 inline-block rounded-full border border-gold/20 px-2 py-0.5 text-xs text-icon-accent">
                   {p.tag}
                 </span>
               </GlassCard>
@@ -125,7 +125,7 @@ export function ProfileGrid() {
 
 export function PhotoGrid() {
   return (
-    <SectionReveal className="section-padding bg-black/30">
+    <SectionReveal className="section-padding bg-section-muted">
       <div className="container-narrow">
         <SectionHeader eyebrow="Gallery" title="The Movement In Motion" />
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
@@ -139,7 +139,7 @@ export function PhotoGrid() {
                   i === 0 ? 'aspect-square md:aspect-[4/5]' : 'aspect-square'
                 } bg-gradient-to-br from-brown/20 to-gold/10`}
               >
-                <span className="text-xs text-cream/50">{photo.label}</span>
+                <span className="text-xs text-theme-subtle">{photo.label}</span>
               </div>
             </FadeItem>
           ))}

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 export default function SentryErrorFallback({ error, resetError }) {
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center px-4 py-24 text-center">
-      <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-gold">
+      <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-icon-accent">
         Something went wrong
       </p>
       <h1 className="mb-4 font-display text-3xl text-cream sm:text-4xl">

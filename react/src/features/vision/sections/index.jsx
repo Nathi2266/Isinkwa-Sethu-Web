@@ -56,7 +56,7 @@ export function FutureNarrative() {
 
 export function HorizontalTimeline() {
   return (
-    <SectionReveal className="section-padding bg-black/30">
+    <SectionReveal className="section-padding bg-section-muted">
       <div className="container-narrow">
         <SectionHeader eyebrow="Roadmap" title="The Movement Timeline" />
         <div className="hidden overflow-x-auto pb-4 md:block">
@@ -67,7 +67,7 @@ export function HorizontalTimeline() {
                   <motion.div
                     whileInView={{ scale: [0.9, 1] }}
                     viewport={{ once: true }}
-                    className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-gold bg-background font-display text-lg font-bold text-gold"
+                    className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-gold bg-background font-display text-lg font-bold text-icon-accent"
                   >
                     {item.step}
                   </motion.div>
@@ -78,7 +78,7 @@ export function HorizontalTimeline() {
                     />
                   )}
                   <h3 className="mt-4 font-display text-sm font-semibold text-cream">{item.title}</h3>
-                  <p className="mt-2 text-xs text-cream/55">{item.description}</p>
+                  <p className="mt-2 text-xs text-theme-subtle">{item.description}</p>
                 </div>
               </FadeItem>
             ))}
@@ -88,12 +88,12 @@ export function HorizontalTimeline() {
           {timelineSteps.map((item) => (
             <FadeItem key={item.step}>
               <GlassCard className="flex gap-4 p-5">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gold text-gold">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gold text-icon-accent">
                   {item.step}
                 </span>
                 <div>
                   <h3 className="font-display font-semibold text-cream">{item.title}</h3>
-                  <p className="mt-1 text-sm text-cream/60">{item.description}</p>
+                  <p className="mt-1 text-sm text-theme-muted">{item.description}</p>
                 </div>
               </GlassCard>
             </FadeItem>
@@ -138,9 +138,9 @@ export function FactoryEcosystem() {
           {ecosystemNodes.map((node, i) => (
             <FadeItem key={node.label}>
               <GlassCard className="relative p-6 text-center">
-                <span className="text-xs font-semibold text-gold">0{i + 1}</span>
+                <span className="text-xs font-semibold text-icon-accent">0{i + 1}</span>
                 <h3 className="mt-2 font-display text-lg font-semibold text-cream">{node.label}</h3>
-                <p className="mt-1 text-xs text-cream/55">{node.sub}</p>
+                <p className="mt-1 text-xs text-theme-subtle">{node.sub}</p>
                 {i < ecosystemNodes.length - 1 && (
                   <span
                     className="absolute -right-2 top-1/2 hidden h-0.5 w-4 bg-gold/40 lg:block"
@@ -158,7 +158,7 @@ export function FactoryEcosystem() {
 
 export function OwnershipFuture() {
   return (
-    <SectionReveal className="section-padding bg-black/30">
+    <SectionReveal className="section-padding bg-section-muted">
       <div className="container-narrow editorial-grid">
         <FadeItem className="lg:col-span-6">
           <SectionHeader
@@ -168,7 +168,7 @@ export function OwnershipFuture() {
             align="left"
             className="mb-0"
           />
-          <Link to="/ownership" className="mt-6 inline-block text-sm font-semibold text-gold">
+          <Link to="/ownership" className="mt-6 inline-block text-sm font-semibold text-icon-accent">
             Explore ownership model →
           </Link>
         </FadeItem>
@@ -181,7 +181,7 @@ export function OwnershipFuture() {
                   className="flex items-center gap-3 rounded-lg border border-gold/15 bg-gold/5 px-4 py-3"
                 >
                   <span className="h-2 w-2 rounded-full bg-gold" />
-                  <span className="text-sm text-cream/80">{item}</span>
+                  <span className="text-sm text-theme-muted">{item}</span>
                 </div>
               ))}
             </div>

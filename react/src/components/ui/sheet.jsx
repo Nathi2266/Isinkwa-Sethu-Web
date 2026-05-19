@@ -12,7 +12,7 @@ const SheetOverlay = React.forwardRef(({ className, ...props }, ref) => (
   <SheetPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-black/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+      'fixed inset-0 z-50 bg-overlay backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className
     )}
     {...props}
@@ -34,7 +34,7 @@ const SheetContent = React.forwardRef(({ className, children, side = 'right', ..
       {...props}
     >
       {children}
-      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm text-cream opacity-70 transition-opacity hover:text-gold hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-gold">
+      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm text-foreground opacity-80 transition-opacity hover:text-icon-accent hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-gold">
         <X className="size-5" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
@@ -50,7 +50,7 @@ const SheetHeader = ({ className, ...props }) => (
 const SheetTitle = React.forwardRef(({ className, ...props }, ref) => (
   <SheetPrimitive.Title
     ref={ref}
-    className={cn('font-display text-lg font-semibold text-cream', className)}
+    className={cn('font-display text-lg font-semibold text-foreground', className)}
     {...props}
   />
 ))

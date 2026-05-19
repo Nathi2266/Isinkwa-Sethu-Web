@@ -10,7 +10,7 @@ import { faqs } from '@/config/site'
 
 export default function FAQSection({ items = faqs, title = 'Questions Answered' }) {
   return (
-    <SectionReveal className="section-padding-lg bg-black/30">
+    <SectionReveal className="section-padding-lg bg-section-muted">
       <div className="container-narrow max-w-3xl">
         <SectionHeader eyebrow="FAQ" title={title} />
         <FadeItem>
@@ -21,10 +21,10 @@ export default function FAQSection({ items = faqs, title = 'Questions Answered' 
                 value={`item-${index}`}
                 className="glass rounded-xl border-gold/10 px-4"
               >
-                <AccordionTrigger className="text-left hover:text-gold">
+                <AccordionTrigger className="text-left hover:text-icon-accent">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-cream/70">{faq.answer}</AccordionContent>
+                <AccordionContent className="text-theme-muted">{faq.answer}</AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>

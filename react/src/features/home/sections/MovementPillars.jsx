@@ -21,8 +21,8 @@ export default function MovementPillars() {
                 <GlassCard className="flex h-full flex-col p-8 lg:p-10">
                   <span className="font-display text-5xl font-bold text-gold/30">0{i + 1}</span>
                   <h3 className="mt-4 font-display text-xl font-semibold text-cream">{pillar.title}</h3>
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-cream/65">{pillar.description}</p>
-                  <span className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-gold">
+                  <p className="mt-3 flex-1 text-sm leading-relaxed text-theme-muted">{pillar.description}</p>
+                  <span className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-icon-accent">
                     Explore <ArrowRight className="size-4" />
                   </span>
                 </GlassCard>

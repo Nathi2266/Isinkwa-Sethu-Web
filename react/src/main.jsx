@@ -1,3 +1,4 @@
+import './lib/theme-init.js'
 import './sentry.js'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -6,6 +7,7 @@ import { Sentry, isSentryEnabled } from './sentry.js'
 import App from './App.jsx'
 import SentryErrorFallback from '@/components/SentryErrorFallback'
 import { AdminAuthProvider } from '@/contexts/AdminAuthContext'
+import { ThemeProvider } from '@/contexts/ThemeContext'
 import './styles/globals.css'
 import './styles/motion.css'
 
@@ -13,9 +15,11 @@ function Root() {
   const app = (
     <StrictMode>
       <BrowserRouter>
-        <AdminAuthProvider>
-          <App />
-        </AdminAuthProvider>
+        <ThemeProvider>
+          <AdminAuthProvider>
+            <App />
+          </AdminAuthProvider>
+        </ThemeProvider>
       </BrowserRouter>
     </StrictMode>
   )
