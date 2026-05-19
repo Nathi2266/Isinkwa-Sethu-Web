@@ -1,23 +1,15 @@
-import {
-  AboutHero,
-  MovementStats,
-  OriginStory,
-  VisionStatement,
-  WhyOwnership,
-  ImpactPreview,
-  AboutCTA,
-} from '@/features/about/sections'
+import PageHero from '@/components/PageHero'
+import Stats from '@/components/Stats'
 
 export default function About() {
   return (
     <main>
-      <AboutHero />
-      <MovementStats />
-      <OriginStory />
-      <VisionStatement />
-      <WhyOwnership />
-      <ImpactPreview />
-      <AboutCTA />
+      <PageHero
+        eyebrow="About"
+        title="Our Story & Movement"
+        description="Isinkwa Sethu is a digital economic movement — uniting communities to build shared ownership, not dependency."
+      />
+      <Stats />
     </main>
   )
 }
