@@ -1,0 +1,43 @@
+name: Render backend deploy
+description: Trigger the Render deploy hook for the Docker API service
+
+inputs:
+  deploy-hook:
+    description: Render deploy hook URL (Backend_Deploy_Hook secret)
+    required: true
+  wait-seconds:
+    description: Seconds to wait after triggering the hook
+    required: false
+    default: "90"
+
+runs:
+  using: composite
+  steps:
+    - name: Trigger Render backend deploy hook
+      shell: bash
+      env:
+        BACKEND_DEPLOY_HOOK: ${{ inputs.deploy-hook }}
+        WAIT_SECONDS: ${{ inputs.wait-seconds }}
+      run: |
+        set -euo pipefail
+        if [ -z "${BACKEND_DEPLOY_HOOK:-}" ]; then
+          echo "::error::Backend_Deploy_Hook secret is not set."
+          exit 1
+        fi
+        echo "Triggering Render backend deploy hook…"
+        curl -fsSL -X POST "$BACKEND_DEPLOY_HOOK"
+        echo "Waiting ${WAIT_SECONDS}s for backend deploy…"
+        sleep "$WAIT_SECONDS"
+
+    - name: Backend deploy summary
+      if: always()
+      shell: bash
+      run: |
+        {
+          echo "### Render backend deployment"
+          echo ""
+          echo "| Step | Status |"
+          echo "|---|---|"
+          echo "| Deploy hook | triggered |"
+          echo "| API URL | \`https://isinkwa-sethu-web-kpnm.onrender.com\` |"
+        } >> "$GITHUB_STEP_SUMMARY"

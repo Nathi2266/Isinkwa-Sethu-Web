@@ -11,7 +11,7 @@ runs:
         fetch-depth: 0
         token: ${{ github.token }}
 
-    - name: Open or reuse PR, squash-merge into main
+    - name: Open or reuse PR, merge into main
       id: promote
       shell: bash
       env:
@@ -51,23 +51,25 @@ runs:
           return 1
         }
 
-        resolve_conflicts_on_source() {
-          echo "Merging origin/${TARGET_BRANCH} into ${SOURCE_BRANCH} and keeping deployment layout…"
+        # Merge incoming (deployment_push) into target (main); on conflict keep incoming (--theirs).
+        resolve_conflicts_on_target() {
+          echo "Merging incoming ${SOURCE_BRANCH} into target ${TARGET_BRANCH}…"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin "${TARGET_BRANCH}" "${SOURCE_BRANCH}"
-          git checkout "${SOURCE_BRANCH}"
+          git checkout "${TARGET_BRANCH}"
+          git reset --hard "origin/${TARGET_BRANCH}"
 
-          if git merge "origin/${TARGET_BRANCH}" --no-edit; then
-            echo "Clean merge of ${TARGET_BRANCH} into ${SOURCE_BRANCH}."
+          if git merge "origin/${SOURCE_BRANCH}" --no-edit; then
+            echo "Clean merge of ${SOURCE_BRANCH} into ${TARGET_BRANCH}."
           else
             if ! git diff --name-only --diff-filter=U | grep -q .; then
               echo "::error::git merge failed but no unmerged paths were found."
               git merge --abort 2>/dev/null || true
               return 1
             fi
-            echo "Resolving conflicts by keeping ${SOURCE_BRANCH} (deployed) versions…"
-            git checkout --ours .
+            echo "Conflicts on ${TARGET_BRANCH}: keeping incoming ${SOURCE_BRANCH} (--theirs)…"
+            git checkout --theirs .
             git add -A
             if git ls-files | grep -q '^frontend/'; then
               git rm -rf frontend 2>/dev/null || true
@@ -76,11 +78,11 @@ runs:
               git rm -rf node_modules 2>/dev/null || true
             fi
             git add -A
-            git commit -m "chore(ci): resolve promote-to-main conflicts (keep ${SOURCE_BRANCH})"
+            git commit -m "chore(ci): promote ${SOURCE_BRANCH} → ${TARGET_BRANCH} (prefer incoming)"
           fi
 
-          git push origin "HEAD:${SOURCE_BRANCH}"
-          echo "Pushed updated ${SOURCE_BRANCH} for PR reconciliation."
+          git push origin "${TARGET_BRANCH}"
+          echo "Pushed ${TARGET_BRANCH} with incoming ${SOURCE_BRANCH} changes."
         }
 
         merge_pr() {
@@ -122,7 +124,7 @@ runs:
             --base "${TARGET_BRANCH}" \
             --head "${SOURCE_BRANCH}" \
             --title "Promote deployment_push → main (post-deploy)" \
-            --body "Automated PR after successful Render deploy. Squash-merged by Actions when mergeable."
+            --body "Automated PR after successful Render deploy. Merged by Actions when mergeable; conflicts resolve by keeping incoming deployment_push on main."
           PR_NUMBER=$(gh pr list \
             -R "${{ github.repository }}" \
             --base "${TARGET_BRANCH}" \
@@ -141,9 +143,17 @@ runs:
         wait_for_mergeable "$PR_NUMBER"
         WAIT_STATUS=$?
         set -e
+
         if [ "$WAIT_STATUS" -eq 2 ]; then
-          resolve_conflicts_on_source
-          wait_for_mergeable "$PR_NUMBER"
+          resolve_conflicts_on_target
+          if gh pr view "$PR_NUMBER" -R "${{ github.repository }}" --json state --jq -e '.state == "OPEN"' >/dev/null 2>&1; then
+            gh pr close "$PR_NUMBER" -R "${{ github.repository }}" \
+              --comment "Changes from \`${SOURCE_BRANCH}\` were merged into \`${TARGET_BRANCH}\` via automated conflict resolution (incoming branch preferred)."
+          fi
+          echo "promoted=true" >> "$GITHUB_OUTPUT"
+          echo "promoted_pr=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+          echo "promoted_via=conflict_resolution" >> "$GITHUB_OUTPUT"
+          exit 0
         elif [ "$WAIT_STATUS" -ne 0 ]; then
           exit "$WAIT_STATUS"
         fi
@@ -151,6 +161,7 @@ runs:
         merge_pr "$PR_NUMBER"
         echo "promoted=true" >> "$GITHUB_OUTPUT"
         echo "promoted_pr=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+        echo "promoted_via=pr_merge" >> "$GITHUB_OUTPUT"
 
     - name: Promotion summary
       if: always()
@@ -161,10 +172,11 @@ runs:
           echo ""
           echo "| Field | Value |"
           echo "|---|---|"
-          echo "| Source | \`deployment_push\` |"
+          echo "| Source (incoming) | \`deployment_push\` |"
           echo "| Target | \`main\` |"
           echo "| Promoted | ${{ steps.promote.outputs.promoted || 'n/a' }} |"
           echo "| PR | ${{ steps.promote.outputs.promoted_pr || 'n/a' }} |"
+          echo "| Method | ${{ steps.promote.outputs.promoted_via || 'n/a' }} |"
           echo ""
           echo "Pushing to \`main\` triggers the CI workflow."
         } >> "$GITHUB_STEP_SUMMARY"

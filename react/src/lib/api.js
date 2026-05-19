@@ -1,5 +1,6 @@
-// Empty base uses Vite proxy (/api → localhost:8000). Set VITE_API_URL for direct calls.
-const API_BASE = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
+import { resolveApiBase } from '@/config/env'
+
+const API_BASE = resolveApiBase()
 
 async function request(path, options = {}) {
   const headers = {
