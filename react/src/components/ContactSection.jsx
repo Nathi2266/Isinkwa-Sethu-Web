@@ -1,8 +1,39 @@
+import { useState } from 'react'
 import { Mail, MapPin, MessageSquare } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { SectionReveal, FadeItem } from '@/components/motion/SectionReveal'
+import { submitContactMessage } from '@/lib/api'
+import { wrapHandler } from '@/lib/monitoring'
+import { site } from '@/config/site'
 
 export default function ContactSection() {
+  const [status, setStatus] = useState({ type: 'idle', message: '' })
+  const [submitting, setSubmitting] = useState(false)
+
+  const handleSubmit = wrapHandler(
+    async (e) => {
+      e.preventDefault()
+      const form = e.currentTarget
+      const name = form.elements.name.value.trim()
+      const email = form.elements.email.value.trim()
+      const message = form.elements.message.value.trim()
+
+      setSubmitting(true)
+      setStatus({ type: 'idle', message: '' })
+
+      try {
+        await submitContactMessage({ name, email, message })
+        form.reset()
+        setStatus({ type: 'success', message: 'Thank you! Your message has been sent.' })
+      } catch (err) {
+        setStatus({ type: 'error', message: err.message || 'Could not send your message.' })
+      } finally {
+        setSubmitting(false)
+      }
+    },
+    { feature: 'contact_form' }
+  )
+
   return (
     <SectionReveal className="section-padding">
       <div className="container-narrow">
@@ -18,8 +49,8 @@ export default function ContactSection() {
                   <Mail className="mt-0.5 size-5 shrink-0 text-gold" aria-hidden="true" />
                   <div>
                     <p className="text-sm font-medium text-cream">Email</p>
-                    <a href="mailto:hello@isinkwasethu.org" className="text-sm hover:text-gold">
-                      hello@isinkwasethu.org
+                    <a href={`mailto:${site.contact.email}`} className="text-sm hover:text-gold">
+                      {site.contact.email}
                     </a>
                   </div>
                 </li>
@@ -27,7 +58,7 @@ export default function ContactSection() {
                   <MapPin className="mt-0.5 size-5 shrink-0 text-gold" aria-hidden="true" />
                   <div>
                     <p className="text-sm font-medium text-cream">Location</p>
-                    <p className="text-sm">South Africa</p>
+                    <p className="text-sm">{site.contact.location}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3 text-cream/75">
@@ -44,7 +75,7 @@ export default function ContactSection() {
           <FadeItem>
             <form
               className="glass rounded-2xl p-8 sm:p-10"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={handleSubmit}
               aria-label="Contact form"
             >
               <h2 className="font-display text-2xl font-bold text-cream">Send A Message</h2>
@@ -89,8 +120,16 @@ export default function ContactSection() {
                   />
                 </div>
               </div>
-              <Button type="submit" variant="gold" className="mt-6 w-full sm:w-auto">
-                Send Message
+              {status.message ? (
+                <p
+                  className={`mt-4 text-sm ${status.type === 'success' ? 'text-green-400' : 'text-red-400'}`}
+                  role="status"
+                >
+                  {status.message}
+                </p>
+              ) : null}
+              <Button type="submit" variant="gold" className="mt-6 w-full sm:w-auto" disabled={submitting}>
+                {submitting ? 'Sending…' : 'Send Message'}
               </Button>
             </form>
           </FadeItem>
