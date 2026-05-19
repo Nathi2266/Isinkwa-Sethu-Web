@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { SectionReveal, FadeItem } from '@/components/motion/SectionReveal'
 
 export default function CTA() {
   return (
-    <SectionReveal className="section-padding" id="cta">
+    <SectionReveal className="section-padding">
       <div className="container-narrow">
         <FadeItem>
           <motion.div
@@ -23,10 +24,10 @@ export default function CTA() {
             </p>
             <div className="relative mt-10 flex flex-col justify-center gap-4 sm:flex-row">
               <Button variant="gold" size="lg" asChild>
-                <a href="#contact">Join The Movement</a>
+                <Link to="/contact">Join The Movement</Link>
               </Button>
               <Button variant="outline-gold" size="lg" asChild>
-                <a href="#ownership">Contribute Now</a>
+                <Link to="/ownership">Contribute Now</Link>
               </Button>
             </div>
           </motion.div>

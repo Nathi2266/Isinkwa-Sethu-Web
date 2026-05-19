@@ -42,7 +42,7 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <SectionReveal className="section-padding" id="community">
+    <SectionReveal className="section-padding">
       <div className="container-narrow">
         <FadeItem className="mb-12 text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gold">Testimonials</p>

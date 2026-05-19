@@ -11,7 +11,7 @@ const blocks = [
 
 export default function R370Concept() {
   return (
-    <SectionReveal className="section-padding" id="r370">
+    <SectionReveal className="section-padding">
       <div className="container-narrow grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
         <FadeItem>
           <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gold">The R370 Concept</p>
