@@ -1,15 +1,23 @@
-import PageHero from '@/components/PageHero'
-import Testimonials from '@/components/Testimonials'
+import {
+  CommunityHero,
+  FeaturedStory,
+  StoriesCarousel,
+  ProfileGrid,
+  PhotoGrid,
+  CommunityValues,
+  CommunityCTA,
+} from '@/features/community/sections'
 
 export default function Community() {
   return (
     <main>
-      <PageHero
-        eyebrow="Community"
-        title="Voices Of The Movement"
-        description="Real stories from members building ownership, jobs, and futures in their townships."
-      />
-      <Testimonials />
+      <CommunityHero />
+      <FeaturedStory />
+      <StoriesCarousel />
+      <ProfileGrid />
+      <PhotoGrid />
+      <CommunityValues />
+      <CommunityCTA />
     </main>
   )
 }
