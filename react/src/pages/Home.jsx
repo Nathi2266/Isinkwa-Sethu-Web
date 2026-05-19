@@ -1,19 +1,19 @@
-import HomeHero from '@/features/home/sections/HomeHero'
-import ProofStrip from '@/features/home/sections/ProofStrip'
-import MovementPillars from '@/features/home/sections/MovementPillars'
-import CinematicTeaser from '@/features/home/sections/CinematicTeaser'
-import FAQSection from '@/components/shared/FAQSection'
-import MovementCTA from '@/components/primitives/MovementCTA'
+import Hero from '@/components/Hero'
+import ExploreNav from '@/components/ExploreNav'
+import FAQ from '@/components/FAQ'
+import CTA from '@/components/CTA'
+import SentryVerifyButton from '@/components/SentryVerifyButton'
 
 export default function Home() {
   return (
     <main>
-      <HomeHero />
-      <ProofStrip />
-      <MovementPillars />
-      <CinematicTeaser />
-      <FAQSection />
-      <MovementCTA />
+      <Hero />
+      <div className="container-narrow flex justify-center px-4 pb-8 sm:px-6 lg:px-8">
+        <SentryVerifyButton />
+      </div>
+      <ExploreNav />
+      <FAQ />
+      <CTA />
     </main>
   )
 }

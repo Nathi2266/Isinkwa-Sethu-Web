@@ -1,25 +1,15 @@
-import {
-  ImpactHero,
-  ImpactMetrics,
-  YouthEmployment,
-  WomenEmpowerment,
-  TownshipGrowth,
-  LocalEcosystem,
-  ImpactStory,
-  ImpactCTA,
-} from '@/features/impact/sections'
+import PageHero from '@/components/PageHero'
+import Impact from '@/components/Impact'
 
 export default function ImpactPage() {
   return (
     <main>
-      <ImpactHero />
-      <ImpactMetrics />
-      <YouthEmployment />
-      <WomenEmpowerment />
-      <TownshipGrowth />
-      <LocalEcosystem />
-      <ImpactStory />
-      <ImpactCTA />
+      <PageHero
+        eyebrow="Impact"
+        title="Keeping Wealth Inside The Community"
+        description="We are building an economic engine where profits, jobs, and ownership circulate locally."
+      />
+      <Impact />
     </main>
   )
 }

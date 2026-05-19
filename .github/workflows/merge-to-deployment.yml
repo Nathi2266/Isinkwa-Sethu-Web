@@ -395,16 +395,27 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+    env:
+      PRODUCTION_API_URL: https://isinkwa-sethu-web-kpnm.onrender.com
+      FRONTEND_DEPLOY_HOOK: ${{ secrets.Frontend_Deploy_Hook }}
+      BACKEND_DEPLOY_HOOK: ${{ secrets.Backend_Deploy_Hook }}
     steps:
       - name: Checkout repository (required for local actions)
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Build and deploy to Render
+      - name: Build and deploy frontend
         uses: ./.github/actions/render-deploy
         with:
-          deploy-hook: ${{ secrets.Frontend_Deploy_Hook }}
+          deploy-hook: ${{ env.FRONTEND_DEPLOY_HOOK }}
+          api-url: ${{ env.PRODUCTION_API_URL }}
+
+      - name: Deploy backend (Docker)
+        if: ${{ env.BACKEND_DEPLOY_HOOK != '' }}
+        uses: ./.github/actions/render-backend-deploy
+        with:
+          deploy-hook: ${{ env.BACKEND_DEPLOY_HOOK }}
 
       - name: Promote deployment_push to main
         uses: ./.github/actions/promote-to-main
