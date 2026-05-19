@@ -23,14 +23,14 @@ export default function EditorialSection({
       <div className="container-narrow editorial-grid">
         <FadeItem variants={copyVariants} className={cn('lg:col-span-5', reverse && 'lg:order-2')}>
           {eyebrow && (
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-gold">{eyebrow}</p>
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-icon-accent">{eyebrow}</p>
           )}
           <h2 className="font-display text-display font-bold text-cream text-balance">{title}</h2>
-          {lead && <p className="mt-5 text-lead text-cream/70">{lead}</p>}
+          {lead && <p className="mt-5 text-lead text-theme-muted">{lead}</p>}
           {cta && (
             <Link
               to={cta.path}
-              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-gold transition-colors hover:text-cream"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-gold transition-colors hover:text-foreground"
             >
               {cta.label}
               <ArrowRight className="size-4" />

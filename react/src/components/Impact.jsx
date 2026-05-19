@@ -6,7 +6,7 @@ function Metric({ end, suffix, label }) {
   return (
     <div ref={ref} className="text-center">
       <p className="font-display text-4xl font-bold text-gold sm:text-5xl">{display}</p>
-      <p className="mt-2 text-sm text-cream/60">{label}</p>
+      <p className="mt-2 text-sm text-theme-muted">{label}</p>
     </div>
   )
 }
@@ -17,11 +17,11 @@ export default function Impact() {
       <div className="container-narrow">
         <div className="glass overflow-hidden rounded-3xl border border-gold/15 p-10 sm:p-16 lg:p-20">
           <FadeItem>
-            <p className="text-sm font-semibold uppercase tracking-widest text-gold">Impact</p>
+            <p className="text-sm font-semibold uppercase tracking-widest text-icon-accent">Impact</p>
             <h2 className="mt-4 max-w-3xl font-display text-4xl font-bold leading-tight text-cream sm:text-5xl lg:text-6xl">
               Keeping wealth inside the community.
             </h2>
-            <p className="mt-6 max-w-2xl text-lg text-cream/70">
+            <p className="mt-6 max-w-2xl text-lg text-theme-muted">
               We are building an economic engine where profits, jobs, and ownership circulate locally —
               powering dignity, independence, and African excellence at scale.
             </p>

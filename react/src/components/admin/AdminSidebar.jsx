@@ -24,7 +24,7 @@ export default function AdminSidebar({ collapsed, onToggleCollapse, onLogout }) 
     <>
       <aside
         className={cn(
-          'flex h-full flex-col border-r border-gold/15 bg-black/60 backdrop-blur-md transition-all duration-300',
+          'flex h-screen shrink-0 flex-col border-r border-gold/15 bg-sidebar backdrop-blur-md transition-all duration-300',
           collapsed ? 'w-[72px]' : 'w-64'
         )}
       >
@@ -44,15 +44,15 @@ export default function AdminSidebar({ collapsed, onToggleCollapse, onLogout }) 
           </Button>
         </div>
 
-        <nav className="flex-1 p-3">
+        <nav className="flex min-h-0 flex-1 flex-col p-3">
           <NavLink
             to="/admin/dashboard"
             className={({ isActive }) =>
               cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
                 isActive
-                  ? 'bg-gold/15 text-gold'
-                  : 'text-cream/75 hover:bg-muted hover:text-gold',
+                  ? 'bg-gold/15 text-icon-accent'
+                  : 'text-theme-muted hover:bg-muted hover:text-icon-accent',
                 collapsed && 'justify-center px-2'
               )
             }
@@ -63,12 +63,12 @@ export default function AdminSidebar({ collapsed, onToggleCollapse, onLogout }) 
           </NavLink>
         </nav>
 
-        <div className="border-t border-gold/10 p-3">
+        <div className="mt-auto shrink-0 border-t border-gold/10 p-3">
           <Button
             type="button"
             variant="ghost"
             className={cn(
-              'w-full justify-start gap-3 text-cream/80 hover:text-gold',
+              'w-full justify-start gap-3 text-theme-muted hover:text-icon-accent',
               collapsed && 'justify-center px-2'
             )}
             onClick={() => setLogoutOpen(true)}

@@ -22,13 +22,13 @@ export default function StatCounter({
     >
       <p
         className={cn(
-          'font-display font-bold text-gold',
+          'font-display font-bold text-icon-accent',
           size === 'lg' ? 'text-4xl sm:text-5xl lg:text-6xl' : 'text-3xl sm:text-4xl'
         )}
       >
         {display}
       </p>
-      <p className="mt-3 text-sm text-cream/65">{label}</p>
+      <p className="mt-3 text-sm text-theme-muted">{label}</p>
     </motion.article>
   )
 }

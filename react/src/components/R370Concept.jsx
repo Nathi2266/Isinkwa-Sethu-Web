@@ -14,11 +14,11 @@ export default function R370Concept() {
     <SectionReveal className="section-padding">
       <div className="container-narrow grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
         <FadeItem>
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gold">The R370 Concept</p>
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-icon-accent">The R370 Concept</p>
           <h2 className="font-display text-3xl font-bold text-cream sm:text-4xl">
             Small Inputs. Massive Infrastructure.
           </h2>
-          <p className="mt-6 text-lg leading-relaxed text-cream/70">
+          <p className="mt-6 text-lg leading-relaxed text-theme-muted">
             R370 is not a donation — it is a stake in collective ownership. When thousands contribute
             at the same level, we unlock manufacturing capacity, jobs, and long-term wealth that stays
             in the township.
@@ -61,7 +61,7 @@ export default function R370Concept() {
             >
               {blocks[4].label}
             </motion.div>
-            <p className="text-center text-xs text-cream/50">Animated ecosystem placeholder</p>
+            <p className="text-center text-xs text-theme-subtle">Animated ecosystem placeholder</p>
           </motion.div>
         </FadeItem>
       </div>

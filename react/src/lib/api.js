@@ -50,3 +50,11 @@ export function fetchContactMessages(token) {
     },
   })
 }
+
+export function fetchContactMessage(token, messageId) {
+  return request(`/api/admin/messages/${messageId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
