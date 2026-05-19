@@ -396,11 +396,6 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - name: Checkout repository (required for local actions)
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Build and deploy to Render
         uses: ./.github/actions/render-deploy
         with:
