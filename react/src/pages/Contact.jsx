@@ -1,15 +1,21 @@
-import PageHero from '@/components/PageHero'
-import ContactSection from '@/components/ContactSection'
+import {
+  ContactHero,
+  ContactExperience,
+  ContactChannels,
+  SocialStrip,
+  ContactFAQ,
+  ContactCTA,
+} from '@/features/contact/sections'
 
 export default function Contact() {
   return (
     <main>
-      <PageHero
-        eyebrow="Contact"
-        title="Let's Build Together"
-        description="Reach out to join the movement, explore partnerships, or ask questions about community ownership."
-      />
-      <ContactSection />
+      <ContactHero />
+      <ContactExperience />
+      <ContactChannels />
+      <SocialStrip />
+      <ContactFAQ />
+      <ContactCTA />
     </main>
   )
 }
