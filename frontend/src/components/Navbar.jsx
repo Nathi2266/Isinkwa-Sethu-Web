@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link, NavLink } from 'react-router-dom'
 import { Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,16 +11,20 @@ import {
   SheetClose,
 } from '@/components/ui/sheet'
 import { useScrollNavbar } from '@/hooks/useScrollNavbar'
+import { navLinks } from '@/config/navigation'
 import { cn } from '@/lib/utils'
 
-const navLinks = [
-  { label: 'About', href: '#about' },
-  { label: 'Vision', href: '#vision' },
-  { label: 'Ownership', href: '#ownership' },
-  { label: 'Impact', href: '#impact' },
-  { label: 'Community', href: '#community' },
-  { label: 'Contact', href: '#contact' },
-]
+const navLinkClass = ({ isActive }) =>
+  cn(
+    'text-sm font-medium transition-colors',
+    isActive ? 'text-gold' : 'text-cream/80 hover:text-gold'
+  )
+
+const mobileNavLinkClass = ({ isActive }) =>
+  cn(
+    'font-display text-lg transition-colors',
+    isActive ? 'text-gold' : 'text-cream hover:text-gold'
+  )
 
 export default function Navbar() {
   const scrolled = useScrollNavbar()
@@ -38,32 +43,29 @@ export default function Navbar() {
         className="container-narrow flex items-center justify-between px-4 sm:px-6 lg:px-8"
         aria-label="Main navigation"
       >
-        <a
-          href="#"
+        <Link
+          to="/"
           className="font-display text-lg font-bold tracking-tight text-cream transition-colors hover:text-gold sm:text-xl"
         >
           Isinkwa Sethu
-        </a>
+        </Link>
 
         <ul className="hidden items-center gap-8 lg:flex">
           {navLinks.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className="text-sm font-medium text-cream/80 transition-colors hover:text-gold"
-              >
+            <li key={link.path}>
+              <NavLink to={link.path} className={navLinkClass}>
                 {link.label}
-              </a>
+              </NavLink>
             </li>
           ))}
         </ul>
 
         <div className="hidden items-center gap-3 lg:flex">
           <Button variant="outline-gold" size="sm" asChild>
-            <a href="#cta">Join The Movement</a>
+            <Link to="/contact">Join The Movement</Link>
           </Button>
           <Button variant="gold" size="sm" asChild>
-            <a href="#ownership">Contribute R370</a>
+            <Link to="/ownership">Contribute R370</Link>
           </Button>
         </div>
 
@@ -79,15 +81,11 @@ export default function Navbar() {
             </SheetHeader>
             <ul className="mt-8 flex flex-col gap-6">
               {navLinks.map((link) => (
-                <li key={link.href}>
+                <li key={link.path}>
                   <SheetClose asChild>
-                    <a
-                      href={link.href}
-                      onClick={handleNavClick}
-                      className="font-display text-lg text-cream transition-colors hover:text-gold"
-                    >
+                    <NavLink to={link.path} onClick={handleNavClick} className={mobileNavLinkClass}>
                       {link.label}
-                    </a>
+                    </NavLink>
                   </SheetClose>
                 </li>
               ))}
@@ -95,16 +93,16 @@ export default function Navbar() {
             <div className="mt-10 flex flex-col gap-3">
               <SheetClose asChild>
                 <Button variant="outline-gold" asChild>
-                  <a href="#cta" onClick={handleNavClick}>
+                  <Link to="/contact" onClick={handleNavClick}>
                     Join The Movement
-                  </a>
+                  </Link>
                 </Button>
               </SheetClose>
               <SheetClose asChild>
                 <Button variant="gold" asChild>
-                  <a href="#ownership" onClick={handleNavClick}>
+                  <Link to="/ownership" onClick={handleNavClick}>
                     Contribute R370
-                  </a>
+                  </Link>
                 </Button>
               </SheetClose>
             </div>

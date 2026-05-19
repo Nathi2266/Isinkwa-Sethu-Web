@@ -10,7 +10,7 @@ const stories = [
 
 export default function Storytelling() {
   return (
-    <SectionReveal className="section-padding bg-black/30" id="storytelling">
+    <SectionReveal className="section-padding bg-black/30">
       <div className="container-narrow">
         <FadeItem className="mb-12 max-w-2xl">
           <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gold">Storytelling</p>

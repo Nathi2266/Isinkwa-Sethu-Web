@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { Play } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { FadeItem } from '@/components/motion/SectionReveal'
@@ -19,7 +20,6 @@ const particles = Array.from({ length: 12 }, (_, i) => ({
 export default function Hero() {
   return (
     <section
-      id="vision"
       aria-labelledby="hero-heading"
       className="relative flex min-h-screen items-center overflow-hidden hero-gradient pt-24"
     >
@@ -51,13 +51,13 @@ export default function Hero() {
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
             <Button variant="gold" size="lg" asChild>
-              <a href="#cta">Become Part of the Movement</a>
+              <Link to="/contact">Become Part of the Movement</Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
-              <a href="#storytelling" className="flex items-center gap-2">
+              <Link to="/vision" className="flex items-center gap-2">
                 <Play className="size-4 fill-current" />
                 Watch The Vision
-              </a>
+              </Link>
             </Button>
           </div>
         </FadeItem>

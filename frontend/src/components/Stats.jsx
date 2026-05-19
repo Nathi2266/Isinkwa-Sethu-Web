@@ -19,7 +19,7 @@ function StatCard({ end, prefix, suffix, label, decimals = 0 }) {
 
 export default function Stats() {
   return (
-    <SectionReveal className="section-padding" id="about">
+    <SectionReveal className="section-padding">
       <div className="container-narrow">
         <FadeItem className="mb-12 text-center">
           <h2 className="font-display text-3xl font-bold text-cream sm:text-4xl">

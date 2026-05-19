@@ -31,7 +31,7 @@ const cards = [
 
 export default function WhySection() {
   return (
-    <SectionReveal className="section-padding bg-black/30" id="ownership">
+    <SectionReveal className="section-padding bg-black/30">
       <div className="container-narrow">
         <FadeItem className="mb-14 max-w-2xl">
           <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gold">Why Isinkwa Sethu</p>
