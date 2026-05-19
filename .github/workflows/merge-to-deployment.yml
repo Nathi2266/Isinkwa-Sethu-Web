@@ -1,18 +1,18 @@
-name: Merge branch into deployment
+name: Merge branch into deployment_push
 
 on:
   push:
     branches-ignore:
       - main
       - master
-      - deployment
+      - deployment_push
       - dependabot/**
       - renovate/**
       - gh-readonly-queue/**
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches:
-      - deployment
+      - deployment_push
 
 permissions:
   contents: write
@@ -25,7 +25,7 @@ concurrency:
 
 jobs:
   merge_into_deployment:
-    name: Merge into deployment
+    name: Merge into deployment_push
     runs-on: ubuntu-latest
     if: |
       github.event_name == 'pull_request' ||
@@ -63,7 +63,7 @@ jobs:
                   return 0
                   ;;
                 CONFLICTING)
-                  echo "::error::PR #${pr} has merge conflicts with deployment."
+                  echo "::error::PR #${pr} has merge conflicts with deployment_push."
                   return 1
                   ;;
                 *)
@@ -82,33 +82,33 @@ jobs:
               return 0
             fi
             if gh pr merge "$pr" -R "${{ github.repository }}" --squash --delete-branch=false; then
-              echo "Squash-merged PR #${pr} into deployment."
+              echo "Squash-merged PR #${pr} into deployment_push."
               return 0
             fi
             if gh pr merge "$pr" -R "${{ github.repository }}" --merge --delete-branch=false; then
-              echo "Merge-committed PR #${pr} into deployment (squash unavailable)."
+              echo "Merge-committed PR #${pr} into deployment_push (squash unavailable)."
               return 0
             fi
-            echo "::error::Could not merge PR #${pr} into deployment."
+            echo "::error::Could not merge PR #${pr} into deployment_push."
             return 1
           }
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             PR_NUMBER="${{ github.event.pull_request.number }}"
             BRANCH_NAME="${{ github.head_ref }}"
-            echo "PR #${PR_NUMBER} opened/updated (${BRANCH_NAME} → deployment); squash-merge when ready."
+            echo "PR #${PR_NUMBER} opened/updated (${BRANCH_NAME} → deployment_push); squash-merge when ready."
           else
             BRANCH_NAME="${GITHUB_REF#refs/heads/}"
-            git fetch origin deployment
-            AHEAD=$(git rev-list --count "origin/deployment..HEAD" || true)
+            git fetch origin deployment_push
+            AHEAD=$(git rev-list --count "origin/deployment_push..HEAD" || true)
             if [ "${AHEAD:-0}" -eq 0 ]; then
-              echo "No commits on ${BRANCH_NAME} ahead of deployment — nothing to merge."
+              echo "No commits on ${BRANCH_NAME} ahead of deployment_push — nothing to merge."
               echo "should_trigger_deployment=false" >> "$GITHUB_OUTPUT"
               exit 0
             fi
-            echo "${BRANCH_NAME} is ${AHEAD} commit(s) ahead of deployment."
+            echo "${BRANCH_NAME} is ${AHEAD} commit(s) ahead of deployment_push."
             PR_NUMBER=$(gh pr list \
               -R "${{ github.repository }}" \
-              --base deployment \
+              --base deployment_push \
               --head "$BRANCH_NAME" \
               --state open \
               --json number \
@@ -116,20 +116,20 @@ jobs:
             if [ -z "$PR_NUMBER" ]; then
               gh pr create \
                 -R "${{ github.repository }}" \
-                --base deployment \
+                --base deployment_push \
                 --head "$BRANCH_NAME" \
-                --title "Promote ${BRANCH_NAME} → deployment" \
+                --title "Promote ${BRANCH_NAME} → deployment_push" \
                 --body "Automated PR. Squash-merged by Actions when mergeable."
               PR_NUMBER=$(gh pr list \
                 -R "${{ github.repository }}" \
-                --base deployment \
+                --base deployment_push \
                 --head "$BRANCH_NAME" \
                 --state open \
                 --json number \
                 --jq '.[0].number // empty')
             fi
             if [ -z "$PR_NUMBER" ]; then
-              echo "::error::Could not determine PR number for ${BRANCH_NAME} → deployment."
+              echo "::error::Could not determine PR number for ${BRANCH_NAME} → deployment_push."
               exit 1
             fi
             echo "Using PR #${PR_NUMBER}."
@@ -137,7 +137,7 @@ jobs:
           wait_for_mergeable "$PR_NUMBER"
           squash_merge_pr "$PR_NUMBER"
           echo "should_trigger_deployment=true" >> "$GITHUB_OUTPUT"
-          echo "Merge into deployment complete — deployment pipeline will run next."
+          echo "Merge into deployment_push complete — deployment pipeline will run next."
 
   auto-resolve-conflicts:
     name: auto-resolve-conflicts
@@ -152,7 +152,7 @@ jobs:
       actions: write
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TARGET_BRANCH: deployment
+      TARGET_BRANCH: deployment_push
     steps:
       - name: Checkout PR branch with full history
         uses: actions/checkout@v4
@@ -278,7 +278,7 @@ jobs:
           set -euo pipefail
           git push origin "HEAD:${{ steps.meta.outputs.source_branch }}"
 
-      - name: Merge PR into deployment (squash or merge commit)
+      - name: Merge PR into deployment_push (squash or merge commit)
         id: automerge
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -382,8 +382,8 @@ jobs:
             echo "_Conflicted lines shown are pre-resolution; all were resolved by accepting target branch changes._"
           } >> "$GITHUB_STEP_SUMMARY"
 
-  trigger_deployment:
-    name: Trigger deployment pipeline
+  run_deployment:
+    name: Run deployment pipeline
     runs-on: ubuntu-latest
     needs: [merge_into_deployment, auto-resolve-conflicts]
     if: |
@@ -393,34 +393,18 @@ jobs:
         (needs.auto-resolve-conflicts.result == 'success' && needs.auto-resolve-conflicts.outputs.should_trigger_deployment == 'true')
       )
     permissions:
-      actions: write
+      contents: write
+      pull-requests: write
     steps:
-      - name: Dispatch deployment workflow on deployment branch
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          REPO="${{ github.repository }}"
-          echo "deployment branch should include the latest merge — starting deployment workflow."
-          sleep 15
-          for attempt in 1 2 3; do
-            echo "Dispatch attempt ${attempt}/3…"
-            if gh workflow run deployment.yml --ref deployment -R "$REPO"; then
-              sleep 8
-              echo "Recent deployment workflow runs:"
-              gh run list --workflow=deployment.yml --branch=deployment -L 5 -R "$REPO" || true
-              exit 0
-            fi
-            echo "Dispatch failed; retrying…"
-            sleep 10
-          done
-          echo "::error::Could not dispatch deployment.yml on ref deployment after 3 attempts."
-          exit 1
+      - name: Checkout repository (required for local actions)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Summary
-        run: |
-          {
-            echo "### Deployment pipeline triggered"
-            echo ""
-            echo "Started \`deployment.yml\` on branch \`deployment\` after merge (Render deploy → promote to main → main CI)."
-          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Build and deploy to Render
+        uses: ./.github/actions/render-deploy
+        with:
+          deploy-hook: ${{ secrets.Frontend_Deploy_Hook }}
+
+      - name: Promote deployment_push to main
+        uses: ./.github/actions/promote-to-main
