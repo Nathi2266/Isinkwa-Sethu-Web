@@ -1,0 +1,4 @@
+# Declares expected repository secrets for workflow validation (actionlint / IDE)
+secrets:
+  - Frontend_Deploy_Hook
+  - Backend_Deploy_Hook
