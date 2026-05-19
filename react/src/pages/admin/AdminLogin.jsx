@@ -38,7 +38,7 @@ export default function AdminLogin() {
         className="glass w-full max-w-md rounded-2xl border border-gold/15 p-8"
       >
         <h1 className="font-display text-2xl font-bold text-cream">Admin Login</h1>
-        <p className="mt-2 text-sm text-cream/60">Sign in to manage contact messages.</p>
+        <p className="mt-2 text-sm text-theme-muted">Sign in to manage contact messages.</p>
 
         {error ? (
           <p className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">

@@ -24,7 +24,7 @@ function NavItem({ to, children, onClick }) {
           <span
             className={cn(
               'text-sm font-medium transition-all duration-300',
-              isActive ? 'text-gold' : 'text-cream/80 hover:-translate-y-0.5 hover:text-gold'
+              isActive ? 'text-icon-accent' : 'text-theme-muted hover:-translate-y-0.5 hover:text-icon-accent'
             )}
           >
             {children}
@@ -61,7 +61,7 @@ export default function Navbar() {
         <nav className="flex items-center justify-between px-4 sm:px-6" aria-label="Main navigation">
           <Link
             to="/"
-            className="font-display text-lg font-bold tracking-tight text-cream transition-colors hover:text-gold sm:text-xl"
+            className="font-display text-lg font-bold tracking-tight text-cream transition-colors hover:text-icon-accent sm:text-xl"
           >
             {site.name}
           </Link>
@@ -111,7 +111,7 @@ export default function Navbar() {
                         className={({ isActive }) =>
                           cn(
                             'font-display text-lg transition-colors',
-                            isActive ? 'text-gold' : 'text-cream hover:text-gold'
+                            isActive ? 'text-icon-accent' : 'text-cream hover:text-icon-accent'
                           )
                         }
                       >

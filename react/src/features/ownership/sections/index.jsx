@@ -40,7 +40,7 @@ export function OwnershipPhilosophy() {
             <p className="font-display text-2xl italic text-gold/90">
               &ldquo;Ownership is dignity. Collective action is power.&rdquo;
             </p>
-            <p className="mt-6 text-cream/70">
+            <p className="mt-6 text-theme-muted">
               Isinkwa Sethu mobilizes equal participation — transforming small consistent stakes into
               manufacturing capacity and long-term returns.
             </p>
@@ -61,7 +61,7 @@ const r370Layers = [
 
 export function R370Experience() {
   return (
-    <SectionReveal className="section-padding bg-black/30">
+    <SectionReveal className="section-padding bg-section-muted">
       <div className="container-narrow grid items-center gap-12 lg:grid-cols-2">
         <FadeItem>
           <SectionHeader
@@ -117,7 +117,7 @@ export function WealthCirculation() {
             <FadeItem key={node}>
               <div className="flex items-center gap-3">
                 <GlassCard className="px-5 py-4 text-center">
-                  <p className="text-xs font-semibold text-gold">0{i + 1}</p>
+                  <p className="text-xs font-semibold text-icon-accent">0{i + 1}</p>
                   <p className="mt-1 text-sm font-medium text-cream">{node}</p>
                 </GlassCard>
                 {i < flowNodes.length - 1 && (
@@ -142,7 +142,7 @@ const education = [
 
 export function SmartMoney() {
   return (
-    <SectionReveal className="section-padding bg-black/30">
+    <SectionReveal className="section-padding bg-section-muted">
       <div className="container-narrow">
         <SectionHeader eyebrow="Smart Money" title="Education For Collective Decisions" />
         <div className="grid gap-6 lg:grid-cols-3">
@@ -151,9 +151,9 @@ export function SmartMoney() {
             return (
               <FadeItem key={item.title}>
                 <GlassCard className="h-full p-8">
-                  <Icon className="mb-4 size-8 text-gold" />
+                  <Icon className="mb-4 size-8 text-icon-accent" />
                   <h3 className="font-display text-lg font-semibold text-cream">{item.title}</h3>
-                  <p className="mt-2 text-sm text-cream/65">{item.text}</p>
+                  <p className="mt-2 text-sm text-theme-muted">{item.text}</p>
                 </GlassCard>
               </FadeItem>
             )

@@ -11,15 +11,19 @@ import Community from '@/pages/Community'
 import Contact from '@/pages/Contact'
 import AdminLogin from '@/pages/admin/AdminLogin'
 import AdminDashboard from '@/pages/admin/AdminDashboard'
+import MessageDetail from '@/pages/admin/MessageDetail'
+import ThemeToggleFab from '@/components/theme/ThemeToggleFab'
 
 const SentryRoutes = withSentryReactRouterV7Routing(Routes)
 
 function App() {
   return (
+    <>
     <SentryRoutes>
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard/:messageId" element={<MessageDetail />} />
         <Route path="dashboard" element={<AdminDashboard />} />
       </Route>
       <Route element={<PageLayout />}>
@@ -32,6 +36,8 @@ function App() {
         <Route path="/contact" element={<Contact />} />
       </Route>
     </SentryRoutes>
+    <ThemeToggleFab />
+    </>
   )
 }
 

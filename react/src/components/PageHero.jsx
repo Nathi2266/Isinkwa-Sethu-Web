@@ -9,7 +9,7 @@ export default function PageHero({ eyebrow, title, description }) {
       <div className="container-narrow relative z-10 px-4 sm:px-6 lg:px-8">
         <FadeItem className="mx-auto max-w-3xl text-center">
           {eyebrow && (
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-gold">{eyebrow}</p>
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-icon-accent">{eyebrow}</p>
           )}
           <h1
             id="page-hero-heading"
@@ -18,7 +18,7 @@ export default function PageHero({ eyebrow, title, description }) {
             {title}
           </h1>
           {description && (
-            <p className="mt-6 text-lg leading-relaxed text-cream/75">{description}</p>
+            <p className="mt-6 text-lg leading-relaxed text-theme-muted">{description}</p>
           )}
         </FadeItem>
       </div>

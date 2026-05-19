@@ -21,15 +21,15 @@ const footerGroups = {
 
 export default function Footer() {
   return (
-    <footer className="relative border-t border-gold/10 bg-black/60 section-padding-lg pb-12">
+    <footer className="relative border-t border-gold/10 bg-footer section-padding-lg pb-12">
       <div className="container-narrow">
         <div className="grid gap-14 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <p className="font-display text-4xl font-bold leading-none text-cream sm:text-5xl">
               {site.name}
             </p>
-            <p className="mt-6 max-w-md text-lead text-cream/60">{site.mission}</p>
-            <p className="mt-4 text-sm font-semibold uppercase tracking-widest text-gold">
+            <p className="mt-6 max-w-md text-lead text-theme-muted">{site.mission}</p>
+            <p className="mt-4 text-sm font-semibold uppercase tracking-widest text-icon-accent">
               {site.tagline}
             </p>
             <div className="mt-8 flex gap-3">
@@ -40,7 +40,7 @@ export default function Footer() {
                     key={social.label}
                     href={social.href}
                     aria-label={social.label}
-                    className="rounded-xl border border-gold/20 p-2.5 text-cream/70 transition-all hover:border-gold hover:text-gold hover:shadow-[var(--glow-gold-soft)]"
+                    className="rounded-xl border border-gold/20 p-2.5 text-theme-muted transition-all hover:border-gold hover:text-icon-accent hover:shadow-[var(--glow-gold-soft)]"
                   >
                     <Icon className="size-5" />
                   </a>
@@ -51,7 +51,7 @@ export default function Footer() {
 
           {Object.entries(footerGroups).map(([title, links]) => (
             <div key={title} className="lg:col-span-2">
-              <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-gold">
+              <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-icon-accent">
                 {title}
               </h3>
               <ul className="mt-5 space-y-3">
@@ -60,14 +60,14 @@ export default function Footer() {
                     {link.path.startsWith('/') ? (
                       <Link
                         to={link.path}
-                        className="text-sm text-cream/60 transition-colors hover:text-gold"
+                        className="text-sm text-theme-muted transition-colors hover:text-icon-accent"
                       >
                         {link.label}
                       </Link>
                     ) : (
                       <a
                         href={link.path}
-                        className="text-sm text-cream/60 transition-colors hover:text-gold"
+                        className="text-sm text-theme-muted transition-colors hover:text-icon-accent"
                       >
                         {link.label}
                       </a>
@@ -79,31 +79,31 @@ export default function Footer() {
           ))}
 
           <div className="lg:col-span-3">
-            <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-gold">
+            <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-icon-accent">
               Contact
             </h3>
-            <ul className="mt-5 space-y-3 text-sm text-cream/60">
+            <ul className="mt-5 space-y-3 text-sm text-theme-muted">
               <li className="flex items-center gap-2">
-                <Mail className="size-4 shrink-0 text-gold" />
-                <a href={`mailto:${site.contact.email}`} className="hover:text-gold">
+                <Mail className="size-4 shrink-0 text-icon-accent" />
+                <a href={`mailto:${site.contact.email}`} className="hover:text-icon-accent">
                   {site.contact.email}
                 </a>
               </li>
               <li>{site.contact.location}</li>
               <li>
-                <Link to="/contact" className="font-medium text-gold hover:text-cream">
+                <Link to="/contact" className="font-medium text-gold hover:text-foreground">
                   Get in touch →
                 </Link>
               </li>
             </ul>
-            <h3 className="mt-10 font-display text-sm font-semibold uppercase tracking-wider text-gold">
+            <h3 className="mt-10 font-display text-sm font-semibold uppercase tracking-wider text-icon-accent">
               Community Values
             </h3>
             <ul className="mt-4 flex flex-wrap gap-2">
               {site.values.map((value) => (
                 <li
                   key={value}
-                  className="rounded-full border border-gold/15 bg-gold/5 px-3 py-1 text-xs text-cream/70"
+                  className="rounded-full border border-gold/15 bg-gold/5 px-3 py-1 text-xs text-theme-muted"
                 >
                   {value}
                 </li>
@@ -113,10 +113,10 @@ export default function Footer() {
         </div>
 
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-gold/10 pt-8 sm:flex-row">
-          <p className="text-xs text-cream/45">
+          <p className="text-xs text-theme-subtle">
             &copy; {new Date().getFullYear()} {site.name}. All rights reserved.
           </p>
-          <p className="text-xs text-cream/45">Built by communities. Owned by communities.</p>
+          <p className="text-xs text-theme-subtle">Built by communities. Owned by communities.</p>
         </div>
       </div>
     </footer>

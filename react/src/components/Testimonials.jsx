@@ -45,7 +45,7 @@ export default function Testimonials() {
     <SectionReveal className="section-padding">
       <div className="container-narrow">
         <FadeItem className="mb-12 text-center">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gold">Testimonials</p>
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-icon-accent">Testimonials</p>
           <h2 className="font-display text-3xl font-bold text-cream sm:text-4xl">Voices Of The Movement</h2>
         </FadeItem>
 
@@ -56,14 +56,14 @@ export default function Testimonials() {
                 whileHover={{ y: -4 }}
                 className="glass glow-gold-hover flex h-full flex-col rounded-2xl p-8"
               >
-                <p className="flex-1 text-sm leading-relaxed text-cream/80">&ldquo;{item.quote}&rdquo;</p>
+                <p className="flex-1 text-sm leading-relaxed text-theme-muted">&ldquo;{item.quote}&rdquo;</p>
                 <footer className="mt-6 flex items-center gap-4 border-t border-gold/10 pt-6">
                   <div className="h-12 w-12 shrink-0 rounded-full bg-gradient-to-br from-gold/30 to-brown/40" />
                   <div>
                     <cite className="font-display text-sm font-semibold not-italic text-cream">
                       {item.name}
                     </cite>
-                    <p className="text-xs text-cream/50">{item.role}</p>
+                    <p className="text-xs text-theme-subtle">{item.role}</p>
                   </div>
                 </footer>
               </motion.blockquote>

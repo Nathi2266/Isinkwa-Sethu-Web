@@ -126,7 +126,7 @@ export function ContactChannels() {
   ]
 
   return (
-    <SectionReveal className="section-padding bg-black/30">
+    <SectionReveal className="section-padding bg-section-muted">
       <div className="container-narrow">
         <div className="grid gap-6 md:grid-cols-3">
           {channels.map((ch) => {
@@ -134,14 +134,14 @@ export function ContactChannels() {
             return (
               <FadeItem key={ch.title}>
                 <GlassCard className="p-8">
-                  <Icon className="mb-4 size-6 text-gold" />
+                  <Icon className="mb-4 size-6 text-icon-accent" />
                   <h3 className="font-display font-semibold text-cream">{ch.title}</h3>
                   {ch.href ? (
-                    <a href={ch.href} className="mt-2 block text-sm text-cream/70 hover:text-gold">
+                    <a href={ch.href} className="mt-2 block text-sm text-theme-muted hover:text-icon-accent">
                       {ch.value}
                     </a>
                   ) : (
-                    <p className="mt-2 text-sm text-cream/70">{ch.value}</p>
+                    <p className="mt-2 text-sm text-theme-muted">{ch.value}</p>
                   )}
                 </GlassCard>
               </FadeItem>
@@ -166,7 +166,7 @@ export function SocialStrip() {
                 key={social.label}
                 href={social.href}
                 aria-label={social.label}
-                className="rounded-xl border border-gold/20 p-3 text-cream/70 transition-all hover:border-gold hover:text-gold hover:shadow-[var(--glow-gold-soft)]"
+                className="rounded-xl border border-gold/20 p-3 text-theme-muted transition-all hover:border-gold hover:text-icon-accent hover:shadow-[var(--glow-gold-soft)]"
               >
                 <Icon className="size-6" />
               </a>

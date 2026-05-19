@@ -69,7 +69,7 @@ export function WomenEmpowerment() {
 
 export function TownshipGrowth() {
   return (
-    <SectionReveal className="section-padding bg-black/30">
+    <SectionReveal className="section-padding bg-section-muted">
       <div className="container-narrow">
         <SectionHeader eyebrow="Growth" title="Township Growth Statistics" />
         <div className="grid gap-6 sm:grid-cols-3">
@@ -86,7 +86,7 @@ export function TownshipGrowth() {
           <FadeItem>
             <GlassCard className="p-8">
               <div className="h-24 rounded-lg bg-gradient-to-t from-gold/20 to-transparent" />
-              <p className="mt-4 text-center text-xs text-cream/50">Growth chart placeholder</p>
+              <p className="mt-4 text-center text-xs text-theme-subtle">Growth chart placeholder</p>
             </GlassCard>
           </FadeItem>
         </div>
@@ -112,7 +112,7 @@ export function LocalEcosystem() {
               <GlassCard className="p-8 text-center">
                 <div className="mx-auto mb-4 h-16 w-16 rounded-full border border-gold/30 bg-gold/10" />
                 <h3 className="font-display font-semibold text-cream">{item.title}</h3>
-                <p className="mt-2 text-sm text-cream/60">{item.desc}</p>
+                <p className="mt-2 text-sm text-theme-muted">{item.desc}</p>
               </GlassCard>
             </FadeItem>
           ))}
@@ -124,13 +124,13 @@ export function LocalEcosystem() {
 
 export function ImpactStory() {
   return (
-    <SectionReveal className="section-padding bg-black/30">
+    <SectionReveal className="section-padding bg-section-muted">
       <div className="container-narrow">
         <FadeItem className="mx-auto max-w-4xl rounded-3xl border border-gold/20 bg-gradient-to-br from-gold/5 to-green/5 p-12 text-center sm:p-16">
           <p className="font-display text-2xl font-bold leading-snug text-cream sm:text-3xl">
             &ldquo;For the first time, I see a path where our township keeps the value we create.&rdquo;
           </p>
-          <p className="mt-6 text-sm text-cream/50">— Movement member, Soweto</p>
+          <p className="mt-6 text-sm text-theme-subtle">— Movement member, Soweto</p>
         </FadeItem>
       </div>
     </SectionReveal>

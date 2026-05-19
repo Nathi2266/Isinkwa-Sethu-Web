@@ -31,14 +31,14 @@ const cards = [
 
 export default function WhySection() {
   return (
-    <SectionReveal className="section-padding bg-black/30">
+    <SectionReveal className="section-padding bg-section-muted">
       <div className="container-narrow">
         <FadeItem className="mb-14 max-w-2xl">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gold">Why Isinkwa Sethu</p>
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-icon-accent">Why Isinkwa Sethu</p>
           <h2 className="font-display text-3xl font-bold text-cream sm:text-4xl lg:text-5xl">
             Built For Ownership, Not Charity
           </h2>
-          <p className="mt-4 text-lg text-cream/70">
+          <p className="mt-4 text-lg text-theme-muted">
             A revolutionary model of township empowerment — dignity through shared economic power.
           </p>
         </FadeItem>
@@ -55,7 +55,7 @@ export default function WhySection() {
                     <CardIcon className="size-6" aria-hidden="true" />
                   </div>
                   <h3 className="font-display text-xl font-semibold text-cream">{card.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-cream/65">{card.description}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-theme-muted">{card.description}</p>
                 </motion.article>
               </FadeItem>
             )

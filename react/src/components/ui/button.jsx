@@ -11,11 +11,11 @@ const buttonVariants = cva(
         default: 'bg-primary text-primary-foreground hover:brightness-110 glow-gold-hover',
         gold: 'bg-gold text-background shadow-[0_0_24px_rgba(212,160,23,0.35)] hover:shadow-[0_0_40px_rgba(212,160,23,0.5)] hover:brightness-110',
         outline:
-          'border border-gold/40 bg-transparent text-cream hover:border-gold hover:bg-gold/10',
+          'border border-gold/40 bg-transparent text-foreground hover:border-gold hover:bg-gold/10',
         'outline-gold':
-          'border border-gold/50 bg-gold/5 text-gold hover:bg-gold/15 hover:border-gold',
-        ghost: 'text-cream hover:bg-muted hover:text-gold',
-        link: 'text-gold underline-offset-4 hover:underline',
+          'border border-gold/50 bg-gold/5 text-icon-accent hover:bg-gold/15 hover:border-gold',
+        ghost: 'text-foreground hover:bg-muted hover:text-icon-accent',
+        link: 'text-icon-accent underline-offset-4 hover:underline',
       },
       size: {
         default: 'h-11 px-6 py-2',

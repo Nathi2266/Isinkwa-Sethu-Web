@@ -35,7 +35,7 @@ export default function Hero() {
 
       <div className="container-narrow relative z-10 grid gap-12 px-4 pb-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-8">
         <FadeItem>
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-gold">
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-icon-accent">
             Digital Economic Movement
           </p>
           <h1
@@ -45,7 +45,7 @@ export default function Hero() {
             Our Bread.{' '}
             <span className="text-gradient-gold">Our Ownership.</span> Our Future.
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-cream/75 leading-relaxed">
+          <p className="mt-6 max-w-xl text-lg text-theme-muted leading-relaxed">
             A community-powered initiative building economic ownership through collective
             township investment.
           </p>
@@ -77,8 +77,8 @@ export default function Hero() {
             >
               <div className="flex h-full flex-col items-center justify-center p-6 text-center">
                 <div className="mb-3 h-16 w-16 rounded-full border border-gold/30 bg-gold/10" />
-                <p className="text-sm font-medium text-cream/60">{item.label}</p>
-                <p className="mt-1 text-xs text-cream/40">Cinematic visual placeholder</p>
+                <p className="text-sm font-medium text-theme-muted">{item.label}</p>
+                <p className="mt-1 text-xs text-theme-subtle">Cinematic visual placeholder</p>
               </div>
             </motion.div>
           ))}

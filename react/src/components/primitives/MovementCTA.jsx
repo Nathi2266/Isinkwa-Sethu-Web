@@ -18,7 +18,7 @@ export default function CTA() {
             <h2 className="relative font-display text-3xl font-bold leading-tight text-cream sm:text-4xl lg:text-5xl">
               The Future Will Be Built By Communities That Own Together.
             </h2>
-            <p className="relative mx-auto mt-6 max-w-xl text-cream/70">
+            <p className="relative mx-auto mt-6 max-w-xl text-theme-muted">
               Join a movement redefining township economics — with dignity, ownership, and African
               excellence at its core.
             </p>
