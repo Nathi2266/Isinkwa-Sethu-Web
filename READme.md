@@ -9,8 +9,6 @@ Isinkwa Sethu is a full-stack platform that presents a community-powered vision 
 | Service | URL |
 |--------|-----|
 | Website | https://isinkwa-sethu-web.onrender.com |
-| API | https://isinkwa-sethu-web-kpnm.onrender.com |
-| API health | https://isinkwa-sethu-web-kpnm.onrender.com/health |
 
 ## Tech stack
 

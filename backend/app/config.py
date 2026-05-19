@@ -30,5 +30,12 @@ class Settings(BaseSettings):
     admin_password: str = "admin"
     cors_origins: str = DEFAULT_CORS
 
+    @field_validator("admin_username", "admin_password", mode="before")
+    @classmethod
+    def strip_admin_credentials(cls, value: str) -> str:
+        if isinstance(value, str):
+            return value.strip()
+        return value
+
 
 settings = Settings()

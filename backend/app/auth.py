@@ -9,7 +9,10 @@ security = HTTPBearer(auto_error=False)
 
 
 def verify_admin_credentials(username: str, password: str) -> bool:
-    return username == settings.admin_username and password == settings.admin_password
+    return (
+        username.strip() == settings.admin_username
+        and password.strip() == settings.admin_password
+    )
 
 
 def create_access_token(subject: str) -> str:
