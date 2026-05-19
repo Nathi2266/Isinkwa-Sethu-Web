@@ -1,10 +1,14 @@
 name: Render deploy
-description: Build the frontend and trigger the Render deploy hook
+description: Build the frontend and trigger the Render static site deploy hook
 
 inputs:
   deploy-hook:
     description: Render deploy hook URL (Frontend_Deploy_Hook secret)
     required: true
+  api-url:
+    description: Production API URL baked into the Vite build
+    required: false
+    default: https://isinkwa-sethu-web-kpnm.onrender.com
 
 runs:
   using: composite
@@ -27,13 +31,14 @@ runs:
       working-directory: react
       run: npm ci
 
-    - name: Build
+    - name: Build for production
       shell: bash
       working-directory: react
+      env:
+        VITE_API_URL: ${{ inputs.api-url }}
       run: npm run build
 
-    - name: Trigger Render deploy hook and wait
-      id: deploy_wait
+    - name: Trigger Render frontend deploy hook and wait
       shell: bash
       env:
         FRONTEND_DEPLOY_HOOK: ${{ inputs.deploy-hook }}
@@ -43,7 +48,7 @@ runs:
           echo "::error::Frontend_Deploy_Hook secret is not set."
           exit 1
         fi
-        echo "Triggering Render deploy hook…"
+        echo "Triggering Render frontend deploy hook…"
         curl -fsSL -X POST "$FRONTEND_DEPLOY_HOOK"
         echo "Waiting 120s for Render deploy to finish…"
         sleep 120
@@ -51,12 +56,16 @@ runs:
     - name: Build summary
       if: always()
       shell: bash
+      env:
+        API_URL: ${{ inputs.api-url }}
       run: |
         {
-          echo "### Render deployment"
+          echo "### Render frontend deployment"
           echo ""
           echo "| Step | Status |"
           echo "|---|---|"
           echo "| Build | completed |"
           echo "| Deploy hook | triggered |"
+          echo "| Site URL | \`https://isinkwa-sethu-web.onrender.com\` |"
+          echo "| API URL (build) | \`${API_URL}\` |"
         } >> "$GITHUB_STEP_SUMMARY"
