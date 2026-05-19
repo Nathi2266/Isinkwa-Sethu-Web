@@ -1,0 +1,38 @@
+import { Navigate, Routes, Route } from 'react-router-dom'
+import { withProfiler, withSentryReactRouterV7Routing } from '@sentry/react'
+import PageLayout from '@/components/layout/PageLayout'
+import AdminLayout from '@/components/admin/AdminLayout'
+import Home from '@/pages/Home'
+import About from '@/pages/About'
+import Vision from '@/pages/Vision'
+import Ownership from '@/pages/Ownership'
+import ImpactPage from '@/pages/ImpactPage'
+import Community from '@/pages/Community'
+import Contact from '@/pages/Contact'
+import AdminLogin from '@/pages/admin/AdminLogin'
+import AdminDashboard from '@/pages/admin/AdminDashboard'
+
+const SentryRoutes = withSentryReactRouterV7Routing(Routes)
+
+function App() {
+  return (
+    <SentryRoutes>
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<AdminDashboard />} />
+      </Route>
+      <Route element={<PageLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/vision" element={<Vision />} />
+        <Route path="/ownership" element={<Ownership />} />
+        <Route path="/impact" element={<ImpactPage />} />
+        <Route path="/community" element={<Community />} />
+        <Route path="/contact" element={<Contact />} />
+      </Route>
+    </SentryRoutes>
+  )
+}
+
+export default withProfiler(App)
