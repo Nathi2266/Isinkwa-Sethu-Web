@@ -15,13 +15,19 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     Base.metadata.create_all(bind=engine)
-    on_render = os.environ.get("RENDER") == "true"
-    using_default_password = settings.admin_password == "admin"
-    logger.info("Admin login user: %s", settings.admin_username)
-    if on_render and using_default_password:
-        logger.warning(
-            "ADMIN_PASSWORD is still the default. Set ADMIN_USERNAME and ADMIN_PASSWORD "
-            "on the API service in Render, then redeploy."
+    password_from_env = bool(os.environ.get("ADMIN_PASSWORD"))
+    # Render captures stdout/stderr; app loggers are often filtered out.
+    print(
+        f"[isinkwa] Admin auth: username={settings.admin_username!r} "
+        f"ADMIN_PASSWORD_env={'set' if password_from_env else 'unset'} "
+        f"password_length={len(settings.admin_password)}",
+        flush=True,
+    )
+    if os.environ.get("RENDER") == "true" and not password_from_env:
+        print(
+            "[isinkwa] WARNING: ADMIN_PASSWORD not in environment — using code default. "
+            "Set ADMIN_USERNAME and ADMIN_PASSWORD on this API service, then redeploy.",
+            flush=True,
         )
     yield
 
@@ -43,6 +49,16 @@ def create_app() -> FastAPI:
 
     @app.get("/health")
     def health():
-        return {"status": "ok"}
+        """Public health check. Auth fields help verify Render env without exposing secrets."""
+        password_from_env = bool(os.environ.get("ADMIN_PASSWORD"))
+        return {
+            "status": "ok",
+            "auth": {
+                "username": settings.admin_username,
+                "password_env_set": password_from_env,
+                "password_length": len(settings.admin_password),
+                "using_default_password": settings.admin_password == "admin",
+            },
+        }
 
     return app
