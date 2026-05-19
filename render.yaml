@@ -28,7 +28,6 @@ services:
         value: https://isinkwa-sethu-web.onrender.com
       - key: JWT_SECRET
         generateValue: true
+      # Set ADMIN_PASSWORD in the Render dashboard (API service only), then redeploy.
       - key: ADMIN_USERNAME
         value: admin
-      - key: ADMIN_PASSWORD
-        generateValue: true
