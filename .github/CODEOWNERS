@@ -1,0 +1,5 @@
+# Everything sensitive under .github
+/.github/ @Nathi2266
+
+# Workflows explicitly
+/.github/workflows/ @Nathi2266
