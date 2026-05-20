@@ -6,15 +6,8 @@ from sqlalchemy.orm import Session
 
 from app.auth import create_access_token, get_current_admin, verify_admin_credentials
 from app.database import get_db
-from app.models import ContactMessage, JoinRequest
-from app.schemas import (
-    AdminLogin,
-    ContactRead,
-    JoinRequestRead,
-    JoinRequestStats,
-    MessageStats,
-    TokenResponse,
-)
+from app.models import ContactMessage
+from app.schemas import AdminLogin, ContactRead, MessageStats, TokenResponse
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -73,62 +66,4 @@ def get_message(
     row = db.get(ContactMessage, message_id)
     if row is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Message not found")
-    return row
-
-
-@router.get("/join-requests/stats", response_model=JoinRequestStats)
-def join_request_stats(
-    db: Session = Depends(get_db),
-    _: str = Depends(get_current_admin),
-):
-    total = db.scalar(select(func.count()).select_from(JoinRequest)) or 0
-    return JoinRequestStats(total=total)
-
-
-@router.get("/join-requests", response_model=list[JoinRequestRead])
-def list_join_requests(
-    db: Session = Depends(get_db),
-    _: str = Depends(get_current_admin),
-    search: str | None = Query(None, max_length=255),
-    email: str | None = Query(None, max_length=255),
-    province: str | None = Query(None, max_length=120),
-    gender: str | None = Query(None, max_length=32),
-    date_from: datetime | None = Query(None),
-    date_to: datetime | None = Query(None),
-):
-    stmt = select(JoinRequest).order_by(JoinRequest.created_at.desc())
-    if search:
-        term = f"%{search.strip()}%"
-        stmt = stmt.where(
-            JoinRequest.first_name.ilike(term)
-            | JoinRequest.last_name.ilike(term)
-            | JoinRequest.email.ilike(term)
-            | JoinRequest.phone.ilike(term)
-            | JoinRequest.location.ilike(term)
-            | JoinRequest.why_join.ilike(term)
-        )
-    if email:
-        stmt = stmt.where(JoinRequest.email.ilike(f"%{email.strip()}%"))
-    if province:
-        stmt = stmt.where(JoinRequest.province.ilike(f"%{province.strip()}%"))
-    if gender:
-        stmt = stmt.where(JoinRequest.gender.ilike(f"%{gender.strip()}%"))
-    if date_from:
-        start = date_from if date_from.tzinfo else date_from.replace(tzinfo=timezone.utc)
-        stmt = stmt.where(JoinRequest.created_at >= start)
-    if date_to:
-        end = date_to if date_to.tzinfo else date_to.replace(tzinfo=timezone.utc)
-        stmt = stmt.where(JoinRequest.created_at <= end)
-    return list(db.scalars(stmt).all())
-
-
-@router.get("/join-requests/{request_id}", response_model=JoinRequestRead)
-def get_join_request(
-    request_id: int,
-    db: Session = Depends(get_db),
-    _: str = Depends(get_current_admin),
-):
-    row = db.get(JoinRequest, request_id)
-    if row is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Join request not found")
     return row

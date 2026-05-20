@@ -2,14 +2,8 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { SectionReveal, FadeItem } from '@/components/motion/SectionReveal'
-import { site } from '@/config/site'
 
-export default function MovementCTA({
-  title = 'The Future Will Be Built By Communities That Own Together.',
-  description = 'Join a movement redefining township economics — with dignity, ownership, and African excellence at its core.',
-  primaryCta = site.ctas.join,
-  secondaryCta = site.ctas.contribute,
-}) {
+export default function CTA() {
   return (
     <SectionReveal className="section-padding">
       <div className="container-narrow">
@@ -22,15 +16,18 @@ export default function MovementCTA({
           >
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,160,23,0.12),transparent_70%)]" />
             <h2 className="relative font-display text-3xl font-bold leading-tight text-cream sm:text-4xl lg:text-5xl">
-              {title}
+              The Future Will Be Built By Communities That Own Together.
             </h2>
-            <p className="relative mx-auto mt-6 max-w-xl text-theme-muted">{description}</p>
+            <p className="relative mx-auto mt-6 max-w-xl text-theme-muted">
+              Join a movement redefining township economics — with dignity, ownership, and African
+              excellence at its core.
+            </p>
             <div className="relative mt-10 flex flex-col justify-center gap-4 sm:flex-row">
               <Button variant="gold" size="lg" asChild>
-                <Link to={primaryCta.path}>{primaryCta.label}</Link>
+                <Link to="/contact">Join The Movement</Link>
               </Button>
               <Button variant="outline-gold" size="lg" asChild>
-                <Link to={secondaryCta.path}>{secondaryCta.label}</Link>
+                <Link to="/ownership">Contribute Now</Link>
               </Button>
             </div>
           </motion.div>

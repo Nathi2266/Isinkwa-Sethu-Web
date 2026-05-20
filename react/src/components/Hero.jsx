@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom'
 import { Play } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { FadeItem } from '@/components/motion/SectionReveal'
-import { images } from '@/config/images'
 
-const visuals = images.home.heroVisuals
+const visuals = [
+  { label: 'African innovation', gradient: 'from-gold/20 to-green/10' },
+  { label: 'Manufacturing vision', gradient: 'from-brown/30 to-gold/10' },
+  { label: 'Community collective', gradient: 'from-green/15 to-gold/15' },
+]
 
 const particles = Array.from({ length: 12 }, (_, i) => ({
   id: i,
@@ -48,7 +51,7 @@ export default function Hero() {
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
             <Button variant="gold" size="lg" asChild>
-              <Link to="/join-us">Become Part of the Movement</Link>
+              <Link to="/contact">Become Part of the Movement</Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
               <Link to="/vision" className="flex items-center gap-2">
@@ -63,7 +66,7 @@ export default function Hero() {
           {visuals.map((item, index) => (
             <motion.div
               key={item.label}
-              className={`glass glow-gold-hover relative aspect-[4/3] overflow-hidden rounded-2xl ${index === 0 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
+              className={`glass glow-gold-hover aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br ${item.gradient} ${index === 0 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
               animate={{ y: [0, -8, 0] }}
               transition={{
                 duration: 5 + index,
@@ -72,19 +75,10 @@ export default function Hero() {
                 delay: index * 0.4,
               }}
             >
-              <img
-                src={item.src}
-                alt={item.alt}
-                loading={index === 0 ? 'eager' : 'lazy'}
-                decoding="async"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-              <div
-                className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent"
-                aria-hidden="true"
-              />
-              <div className="relative flex h-full flex-col items-end justify-end p-5 text-left">
-                <p className="text-sm font-medium text-cream drop-shadow-sm">{item.label}</p>
+              <div className="flex h-full flex-col items-center justify-center p-6 text-center">
+                <div className="mb-3 h-16 w-16 rounded-full border border-gold/30 bg-gold/10" />
+                <p className="text-sm font-medium text-theme-muted">{item.label}</p>
+                <p className="mt-1 text-xs text-theme-subtle">Cinematic visual placeholder</p>
               </div>
             </motion.div>
           ))}

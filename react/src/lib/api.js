@@ -1,4 +1,4 @@
-import { isLocalDev, resolveApiBase } from '@/config/env'
+import { resolveApiBase } from '@/config/env'
 
 const API_BASE = resolveApiBase()
 
@@ -8,22 +8,10 @@ async function request(path, options = {}) {
     ...options.headers,
   }
 
-  const url = `${API_BASE}${path}`
-
-  let response
-  try {
-    response = await fetch(url, {
-      ...options,
-      headers,
-    })
-  } catch {
-    const hint = isLocalDev && !API_BASE
-      ? ' Start the API with `py main.py` in the backend folder (port 8000).'
-      : API_BASE
-        ? ` Check that ${API_BASE} is reachable.`
-        : ''
-    throw new Error(`Could not reach the server.${hint}`)
-  }
+  const response = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers,
+  })
 
   const data = await response.json().catch(() => null)
 
@@ -34,10 +22,6 @@ async function request(path, options = {}) {
       message = detail
     } else if (Array.isArray(detail)) {
       message = detail.map((item) => item.msg ?? item.message).filter(Boolean).join(', ')
-    }
-    if (response.status === 404) {
-      message =
-        'Join service is unavailable. Restart the API server (backend) and try again, or contact support if this continues.'
     }
     throw new Error(message)
   }
@@ -69,29 +53,6 @@ export function fetchContactMessages(token) {
 
 export function fetchContactMessage(token, messageId) {
   return request(`/api/admin/messages/${messageId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-}
-
-export function submitJoinRequest(payload) {
-  return request('/api/join', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  })
-}
-
-export function fetchJoinRequests(token) {
-  return request('/api/admin/join-requests', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-}
-
-export function fetchJoinRequest(token, requestId) {
-  return request(`/api/admin/join-requests/${requestId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

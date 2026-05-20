@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion'
 import { Play } from 'lucide-react'
 import { SectionReveal, FadeItem } from '@/components/motion/SectionReveal'
-import { images } from '@/config/images'
 
-const { featured, stories } = images.vision
+const stories = [
+  { title: 'Founder Vision', type: 'Interview placeholder' },
+  { title: 'Movement Explainer', type: 'Documentary placeholder' },
+  { title: 'Community Voices', type: 'Testimonial series placeholder' },
+]
 
 export default function Storytelling() {
   return (
@@ -15,7 +18,7 @@ export default function Storytelling() {
             The Story Behind The Movement
           </h2>
           <p className="mt-4 text-theme-muted">
-            Cinematic narratives of ownership, resilience, and collective action — told by the people
+            Cinematic narratives of ownership, resilience, and collective action â€” told by the people
             building the future.
           </p>
         </FadeItem>
@@ -25,25 +28,14 @@ export default function Storytelling() {
             whileHover={{ scale: 1.005 }}
             className="glass group relative mb-10 aspect-video overflow-hidden rounded-2xl"
           >
-            <img
-              src={featured.src}
-              alt={featured.alt}
-              loading="lazy"
-              decoding="async"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-            <div
-              className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-background/20"
-              aria-hidden="true"
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
+            <motion.div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-brown/30 to-gold/10">
               <div className="flex flex-col items-center gap-4">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-gold/40 bg-gold/10 backdrop-blur-sm transition-colors group-hover:bg-gold/20">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-gold/40 bg-gold/10 transition-colors group-hover:bg-gold/20">
                   <Play className="size-8 text-icon-accent" fill="currentColor" />
                 </div>
-                <p className="text-sm text-cream drop-shadow-sm">Movement explainer</p>
+                <p className="text-sm text-theme-muted">Movement explainer video placeholder</p>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         </FadeItem>
 
@@ -52,24 +44,11 @@ export default function Storytelling() {
             <FadeItem key={story.title}>
               <motion.article
                 whileHover={{ y: -4 }}
-                className="glass glow-gold-hover overflow-hidden rounded-2xl"
+                className="glass glow-gold-hover rounded-2xl p-6"
               >
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  <img
-                    src={story.src}
-                    alt={story.alt}
-                    loading="lazy"
-                    decoding="async"
-                    className="h-full w-full object-cover"
-                  />
-                  <div
-                    className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent"
-                    aria-hidden="true"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="font-display text-lg font-semibold text-cream">{story.title}</h3>
-                </div>
+                <div className="mb-4 aspect-[16/10] rounded-lg bg-gradient-to-br from-gold/10 to-green/10" />
+                <h3 className="font-display text-lg font-semibold text-cream">{story.title}</h3>
+                <p className="mt-2 text-sm text-theme-subtle">{story.type}</p>
               </motion.article>
             </FadeItem>
           ))}
