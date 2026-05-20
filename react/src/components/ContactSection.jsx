@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Mail, MapPin, MessageSquare } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { SectionReveal, FadeItem } from '@/components/motion/SectionReveal'
@@ -128,9 +129,14 @@ export default function ContactSection() {
                   {status.message}
                 </p>
               ) : null}
-              <Button type="submit" variant="gold" className="mt-6 w-full sm:w-auto" disabled={submitting}>
-                {submitting ? 'Sending…' : 'Send Message'}
-              </Button>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Button type="submit" variant="gold" className="w-full sm:w-auto" disabled={submitting}>
+                  {submitting ? 'Sending…' : 'Send Message'}
+                </Button>
+                <Button variant="outline-gold" className="w-full sm:w-auto" asChild>
+                  <Link to={site.ctas.join.path}>{site.ctas.join.label}</Link>
+                </Button>
+              </div>
             </form>
           </FadeItem>
         </div>

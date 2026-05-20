@@ -62,7 +62,7 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-3 lg:flex">
           <Button variant="outline-gold" size="sm" asChild>
-            <Link to="/contact">Join The Movement</Link>
+            <Link to="/join-us">Join The Movement</Link>
           </Button>
           <Button variant="gold" size="sm" asChild>
             <Link to="/ownership">Contribute R370</Link>
@@ -93,7 +93,7 @@ export default function Navbar() {
             <div className="mt-10 flex flex-col gap-3">
               <SheetClose asChild>
                 <Button variant="outline-gold" asChild>
-                  <Link to="/contact" onClick={handleNavClick}>
+                  <Link to="/join-us" onClick={handleNavClick}>
                     Join The Movement
                   </Link>
                 </Button>

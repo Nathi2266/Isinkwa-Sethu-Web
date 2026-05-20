@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, LayoutDashboard, LogOut } from 'lucide-react'
+import { ChevronLeft, ChevronRight, LayoutDashboard, LogOut, UserPlus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -60,6 +60,22 @@ export default function AdminSidebar({ collapsed, onToggleCollapse, onLogout }) 
           >
             <LayoutDashboard className="size-5 shrink-0" />
             {!collapsed && <span>Dashboard</span>}
+          </NavLink>
+          <NavLink
+            to="/admin/join-requests"
+            className={({ isActive }) =>
+              cn(
+                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                isActive
+                  ? 'bg-gold/15 text-icon-accent'
+                  : 'text-theme-muted hover:bg-muted hover:text-icon-accent',
+                collapsed && 'justify-center px-2'
+              )
+            }
+            title="Join requests"
+          >
+            <UserPlus className="size-5 shrink-0" />
+            {!collapsed && <span>Join requests</span>}
           </NavLink>
         </nav>
 

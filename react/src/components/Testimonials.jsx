@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { SectionReveal, FadeItem } from '@/components/motion/SectionReveal'
+import { images } from '@/config/images'
 
 const testimonials = [
   {
@@ -50,7 +51,7 @@ export default function Testimonials() {
         </FadeItem>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {testimonials.map((item) => (
+          {testimonials.map((item, index) => (
             <FadeItem key={item.name}>
               <motion.blockquote
                 whileHover={{ y: -4 }}
@@ -58,7 +59,13 @@ export default function Testimonials() {
               >
                 <p className="flex-1 text-sm leading-relaxed text-theme-muted">&ldquo;{item.quote}&rdquo;</p>
                 <footer className="mt-6 flex items-center gap-4 border-t border-gold/10 pt-6">
-                  <div className="h-12 w-12 shrink-0 rounded-full bg-gradient-to-br from-gold/30 to-brown/40" />
+                  <img
+                    src={images.community.avatars[index % images.community.avatars.length]}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-gold/30"
+                  />
                   <div>
                     <cite className="font-display text-sm font-semibold not-italic text-cream">
                       {item.name}
