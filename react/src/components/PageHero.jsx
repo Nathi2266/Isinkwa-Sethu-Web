@@ -1,11 +1,31 @@
 import { FadeItem } from '@/components/motion/SectionReveal'
+import { cn } from '@/lib/utils'
 
-export default function PageHero({ eyebrow, title, description }) {
+export default function PageHero({ eyebrow, title, description, backgroundImage }) {
   return (
     <section
       aria-labelledby="page-hero-heading"
-      className="relative overflow-hidden hero-gradient pt-28 pb-16 sm:pt-32 sm:pb-20"
+      className={cn(
+        'relative overflow-hidden hero-gradient pt-28 pb-16 sm:pt-32 sm:pb-20',
+        backgroundImage && 'min-h-[42vh]'
+      )}
     >
+      {backgroundImage && (
+        <>
+          <img
+            src={backgroundImage}
+            alt=""
+            loading="eager"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+            aria-hidden="true"
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-b from-background/85 via-background/75 to-background"
+            aria-hidden="true"
+          />
+        </>
+      )}
       <div className="container-narrow relative z-10 px-4 sm:px-6 lg:px-8">
         <FadeItem className="mx-auto max-w-3xl text-center">
           {eyebrow && (

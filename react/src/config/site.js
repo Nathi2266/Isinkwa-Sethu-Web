@@ -20,7 +20,7 @@ export const site = {
     { label: 'YouTube', href: '#' },
   ],
   ctas: {
-    join: { label: 'Join The Movement', path: '/contact' },
+    join: { label: 'Join The Movement', path: '/join-us' },
     contribute: { label: 'Contribute R370', path: '/ownership' },
     vision: { label: 'Watch The Vision', path: '/vision' },
   },
@@ -96,7 +96,7 @@ export const faqs = [
 export const contactFaqs = [
   {
     question: 'How do I join the movement?',
-    answer: 'Use the contact form or visit our ownership page to learn about the R370 collective stake model.',
+    answer: 'Complete the Join Us form to register your interest. You can also visit our ownership page to learn about the R370 collective stake model.',
   },
   {
     question: 'Can organisations partner with Isinkwa Sethu?',
