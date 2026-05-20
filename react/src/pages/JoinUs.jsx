@@ -15,15 +15,6 @@ import {
   SA_PROVINCES,
 } from '@/config/join'
 import { submitJoinRequest } from '@/lib/api'
-import {
-  extractSaNationalDigits,
-  formatSaPhoneFull,
-  formatSaPhoneNational,
-  isCompleteSaPhone,
-} from '@/lib/saPhone'
-import { enforceMaxChars } from '@/lib/textLimits'
-
-const WHY_JOIN_MAX = 500
 
 const selectClassName =
   'flex h-11 w-full rounded-lg border border-gold/20 bg-input px-3 text-sm text-foreground transition-colors focus-visible:border-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/30'
@@ -48,9 +39,7 @@ function validateForm(form) {
   if (!form.first_name.trim()) return 'First name is required.'
   if (!form.last_name.trim()) return 'Last name is required.'
   if (!form.email.trim()) return 'Email is required.'
-  if (!isCompleteSaPhone(form.phone)) {
-    return 'Enter a complete phone number in the format +27 81 4714 565.'
-  }
+  if (!form.phone.trim()) return 'Phone number is required.'
   if (!form.gender) return 'Please select your gender.'
   if (!form.date_of_birth) return 'Date of birth is required.'
   if (!form.location.trim()) return 'Township / city is required.'
@@ -61,9 +50,6 @@ function validateForm(form) {
   }
   if (form.why_join.trim().length < 10) {
     return 'Please tell us why you want to join (at least 10 characters).'
-  }
-  if (form.why_join.length > WHY_JOIN_MAX) {
-    return `Your story must be at most ${WHY_JOIN_MAX} characters.`
   }
   if (!form.how_heard) return 'Please tell us how you heard about us.'
   if (!form.accepted_terms) return 'You must accept the terms to submit your application.'
@@ -105,7 +91,7 @@ export default function JoinUs() {
         first_name: form.first_name.trim(),
         last_name: form.last_name.trim(),
         email: form.email.trim(),
-        phone: formatSaPhoneFull(form.phone),
+        phone: form.phone.trim(),
         gender: form.gender,
         location: form.location.trim(),
         province: form.province,
@@ -208,27 +194,15 @@ export default function JoinUs() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone *</Label>
-                  <div className="flex h-11 w-full overflow-hidden rounded-lg border border-gold/20 bg-input text-sm transition-colors focus-within:border-gold focus-within:ring-2 focus-within:ring-gold/30">
-                    <span
-                      className="flex shrink-0 items-center border-r border-gold/20 bg-black/20 px-3 font-medium text-theme-muted"
-                      aria-hidden
-                    >
-                      +27
-                    </span>
-                    <input
-                      id="phone"
-                      type="tel"
-                      inputMode="numeric"
-                      required
-                      autoComplete="tel-national"
-                      className="min-w-0 flex-1 bg-transparent px-3 text-foreground outline-none placeholder:text-theme-subtle"
-                      placeholder="81 4714 565"
-                      value={formatSaPhoneNational(form.phone)}
-                      onChange={(e) =>
-                        updateField('phone', extractSaNationalDigits(e.target.value))
-                      }
-                    />
-                  </div>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    required
+                    autoComplete="tel"
+                    placeholder="+27 …"
+                    value={form.phone}
+                    onChange={(e) => updateField('phone', e.target.value)}
+                  />
                 </div>
               </div>
 
@@ -331,23 +305,15 @@ export default function JoinUs() {
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <Label htmlFor="why_join">Why do you want to join? *</Label>
-                  <span className="text-xs text-theme-muted">
-                    {form.why_join.length}/{WHY_JOIN_MAX}
-                  </span>
-                </div>
+                <Label htmlFor="why_join">Why do you want to join? *</Label>
                 <Textarea
                   id="why_join"
                   required
                   minLength={10}
-                  maxLength={WHY_JOIN_MAX}
                   rows={5}
                   placeholder="Share your motivation for joining the movement…"
                   value={form.why_join}
-                  onChange={(e) =>
-                    updateField('why_join', enforceMaxChars(e.target.value, WHY_JOIN_MAX))
-                  }
+                  onChange={(e) => updateField('why_join', e.target.value)}
                 />
               </div>
 
