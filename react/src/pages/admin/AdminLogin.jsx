@@ -37,6 +37,14 @@ export default function AdminLogin() {
         onSubmit={handleSubmit}
         className="glass w-full max-w-md rounded-2xl border border-gold/15 p-8"
       >
+        <Button
+          type="button"
+          variant="ghost"
+          className="mb-4 px-0 text-theme-muted hover:text-foreground"
+          onClick={() => navigate('/')}
+        >
+          ← Back to Home
+        </Button>
         <h1 className="font-display text-2xl font-bold text-cream">Admin Login</h1>
         <p className="mt-2 text-sm text-theme-muted">Sign in to manage contact messages.</p>
 

@@ -11,8 +11,6 @@ from app.routers import admin, contact, join
 
 logger = logging.getLogger(__name__)
 
-logger = logging.getLogger(__name__)
-
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
