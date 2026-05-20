@@ -58,3 +58,26 @@ export function fetchContactMessage(token, messageId) {
     },
   })
 }
+
+export function submitJoinRequest(payload) {
+  return request('/api/join', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function fetchJoinRequests(token) {
+  return request('/api/admin/join-requests', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
+export function fetchJoinRequest(token, requestId) {
+  return request(`/api/admin/join-requests/${requestId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}

@@ -5,11 +5,15 @@ import { Button } from '@/components/ui/button'
 import { SectionReveal, FadeItem } from '@/components/motion/SectionReveal'
 import { submitContactMessage } from '@/lib/api'
 import { wrapHandler } from '@/lib/monitoring'
+import { countWords, enforceMaxWords } from '@/lib/textLimits'
 import { site } from '@/config/site'
+
+const MAX_CONTACT_WORDS = 160
 
 export default function ContactSection() {
   const [status, setStatus] = useState({ type: 'idle', message: '' })
   const [submitting, setSubmitting] = useState(false)
+  const [message, setMessage] = useState('')
 
   const handleSubmit = wrapHandler(
     async (e) => {
@@ -17,14 +21,23 @@ export default function ContactSection() {
       const form = e.currentTarget
       const name = form.elements.name.value.trim()
       const email = form.elements.email.value.trim()
-      const message = form.elements.message.value.trim()
+      const trimmedMessage = message.trim()
+
+      if (countWords(trimmedMessage) > MAX_CONTACT_WORDS) {
+        setStatus({
+          type: 'error',
+          message: `Message must be at most ${MAX_CONTACT_WORDS} words.`,
+        })
+        return
+      }
 
       setSubmitting(true)
       setStatus({ type: 'idle', message: '' })
 
       try {
-        await submitContactMessage({ name, email, message })
+        await submitContactMessage({ name, email, message: trimmedMessage })
         form.reset()
+        setMessage('')
         setStatus({ type: 'success', message: 'Thank you! Your message has been sent.' })
       } catch (err) {
         setStatus({ type: 'error', message: err.message || 'Could not send your message.' })
@@ -108,14 +121,21 @@ export default function ContactSection() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="contact-message" className="mb-1.5 block text-sm font-medium text-theme-muted">
-                    Message
-                  </label>
+                  <div className="mb-1.5 flex items-center justify-between gap-2">
+                    <label htmlFor="contact-message" className="text-sm font-medium text-theme-muted">
+                      Message
+                    </label>
+                    <span className="text-xs text-theme-muted">
+                      {countWords(message)}/{MAX_CONTACT_WORDS} words
+                    </span>
+                  </div>
                   <textarea
                     id="contact-message"
                     name="message"
                     rows={5}
                     required
+                    value={message}
+                    onChange={(e) => setMessage(enforceMaxWords(e.target.value, MAX_CONTACT_WORDS))}
                     className="w-full resize-y rounded-lg border border-gold/20 bg-input px-4 py-3 text-sm text-foreground placeholder:text-theme-subtle focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
                     placeholder="How can we help?"
                   />
