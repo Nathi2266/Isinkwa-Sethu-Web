@@ -12,6 +12,8 @@ export default function EditorialSection({
   cta,
   mediaLabel,
   mediaSublabel,
+  mediaSrc,
+  mediaAlt,
   reverse = false,
   className,
 }) {
@@ -38,7 +40,13 @@ export default function EditorialSection({
           )}
         </FadeItem>
         <FadeItem variants={mediaVariants} className={cn('lg:col-span-7', reverse && 'lg:order-1')}>
-          <MediaFrame label={mediaLabel} sublabel={mediaSublabel} showPlay={!!mediaLabel?.includes('video')} />
+          <MediaFrame
+            src={mediaSrc}
+            alt={mediaAlt}
+            label={mediaLabel}
+            sublabel={mediaSublabel}
+            showPlay={!!mediaLabel?.includes('video')}
+          />
         </FadeItem>
       </div>
     </SectionReveal>

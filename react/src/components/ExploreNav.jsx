@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { SectionReveal, FadeItem } from '@/components/motion/SectionReveal'
 import { navLinks } from '@/config/navigation'
+import { images } from '@/config/images'
 
 const descriptions = {
   About: 'Our story, purpose, and movement by the numbers.',
@@ -31,8 +32,24 @@ export default function ExploreNav() {
             <FadeItem key={link.path}>
               <Link
                 to={link.path}
-                className="glass glow-gold-hover group flex h-full flex-col rounded-2xl p-6 transition-colors"
+                className="glass glow-gold-hover group flex h-full flex-col overflow-hidden rounded-2xl transition-colors"
               >
+                {images.explore[link.label] && (
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <img
+                      src={images.explore[link.label]}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div
+                      className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"
+                      aria-hidden="true"
+                    />
+                  </div>
+                )}
+                <div className="flex flex-1 flex-col p-6">
                 <h3 className="font-display text-lg font-semibold text-cream group-hover:text-icon-accent">
                   {link.label}
                 </h3>
@@ -43,6 +60,7 @@ export default function ExploreNav() {
                   Learn more
                   <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                 </span>
+                </div>
               </Link>
             </FadeItem>
           ))}
