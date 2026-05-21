@@ -12,7 +12,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { contactFaqs, site } from '@/config/site'
-import { addBreadcrumb, wrapHandler } from '@/lib/monitoring'
+import { addBreadcrumb } from '@/lib/sentry'
+import { wrapHandler } from '@/lib/monitoring'
 import { submitContactMessage } from '@/lib/api'
 
 const socialIcons = { Twitter, Instagram, LinkedIn: Linkedin, YouTube: Youtube }
@@ -46,7 +47,12 @@ export function ContactExperience() {
 
       setSubmitting(true)
       setStatus({ type: 'idle', message: '' })
-      addBreadcrumb('contact_form_submit', { hasName: Boolean(name), hasEmail: Boolean(email) })
+      addBreadcrumb({
+        message: 'Form submitted: Contact form',
+        category: 'ui.click',
+        level: 'info',
+        data: { screen: 'ContactExperience', hasName: Boolean(name), hasEmail: Boolean(email) },
+      })
 
       try {
         await submitContactMessage({ name, email, message })

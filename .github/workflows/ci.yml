@@ -43,4 +43,13 @@ jobs:
         run: npm run lint
 
       - name: Build
+        # SENTRY_AUTH_TOKEN enables source map upload via @sentry/vite-plugin.
+        # VITE_SENTRY_RELEASE ties every error to the exact deployed commit.
+        env:
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+          VITE_SENTRY_ENVIRONMENT: production
+          VITE_SENTRY_RELEASE: isinkwa_sethu@${{ github.sha }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: your-sentry-org-slug
+          SENTRY_PROJECT: your-sentry-project-slug
         run: npm run build

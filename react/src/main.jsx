@@ -1,15 +1,16 @@
+import { initSentry, sentryEnabled } from './sentry.js'
 import './lib/theme-init.js'
-import './sentry.js'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { Sentry, isSentryEnabled } from './sentry.js'
 import App from './App.jsx'
-import SentryErrorFallback from '@/components/SentryErrorFallback'
+import { SentryErrorBoundary } from '@/components/SentryErrorBoundary'
 import { AdminAuthProvider } from '@/contexts/AdminAuthContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import './styles/globals.css'
 import './styles/motion.css'
+
+initSentry()
 
 function Root() {
   const app = (
@@ -24,13 +25,9 @@ function Root() {
     </StrictMode>
   )
 
-  if (!isSentryEnabled) return app
+  if (!sentryEnabled) return app
 
-  return (
-    <Sentry.ErrorBoundary fallback={SentryErrorFallback} showDialog={false}>
-      {app}
-    </Sentry.ErrorBoundary>
-  )
+  return <SentryErrorBoundary>{app}</SentryErrorBoundary>
 }
 
 createRoot(document.getElementById('root')).render(<Root />)
