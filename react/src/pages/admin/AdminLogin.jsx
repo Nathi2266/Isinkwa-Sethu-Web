@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { SpinnerWithLabel } from '@/components/ui/spinner'
 import { useAdminAuth } from '@/contexts/AdminAuthContext'
 
 export default function AdminLogin() {
@@ -35,8 +36,15 @@ export default function AdminLogin() {
     <main className="flex min-h-screen items-center justify-center section-padding">
       <form
         onSubmit={handleSubmit}
-        className="glass w-full max-w-md rounded-2xl border border-gold/15 p-8"
+        className="glass relative w-full max-w-md rounded-2xl border border-gold/15 p-8"
+        aria-busy={loading}
       >
+        {loading ? (
+          <div
+            className="pointer-events-none absolute inset-0 z-10 rounded-2xl bg-background/40 backdrop-blur-[2px]"
+            aria-hidden="true"
+          />
+        ) : null}
         <Button
           type="button"
           variant="ghost"
@@ -63,6 +71,7 @@ export default function AdminLogin() {
               autoComplete="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              disabled={loading}
               required
             />
           </div>
@@ -75,12 +84,18 @@ export default function AdminLogin() {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
               required
             />
           </div>
-          <Button type="submit" variant="gold" className="w-full" disabled={loading}>
-            {loading ? 'Signing in…' : 'Sign in'}
+          <Button type="submit" variant="gold" className="relative z-20 w-full" disabled={loading}>
+            {loading ? <SpinnerWithLabel label="Signing in…" /> : 'Sign in'}
           </Button>
+          {loading ? (
+            <p className="text-center text-xs text-theme-muted" role="status" aria-live="polite">
+              Verifying your credentials…
+            </p>
+          ) : null}
         </div>
       </form>
     </main>
