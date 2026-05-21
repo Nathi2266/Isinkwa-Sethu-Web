@@ -10,30 +10,6 @@ inputs:
     description: Production API URL baked into the Vite build
     required: false
     default: https://isinkwa-sethu-web-kpnm.onrender.com
-  vite-sentry-dsn:
-    description: Optional public Sentry DSN to enable frontend error reporting
-    required: false
-    default: ''
-  vite-sentry-environment:
-    description: Sentry environment for frontend
-    required: false
-    default: production
-  vite-sentry-release:
-    description: Optional release string to bake into the build (recommended: isinkwa_sethu@${{ github.sha }})
-    required: false
-    default: ''
-  sentry-auth-token:
-    description: Optional Sentry auth token for sourcemap upload
-    required: false
-    default: ''
-  sentry-org:
-    description: Optional Sentry org slug for sourcemap upload
-    required: false
-    default: ''
-  sentry-project:
-    description: Optional Sentry project slug for sourcemap upload
-    required: false
-    default: ''
 
 runs:
   using: composite
@@ -61,12 +37,12 @@ runs:
       working-directory: react
       env:
         VITE_API_URL: ${{ inputs.api-url }}
-        VITE_SENTRY_DSN: ${{ inputs.vite-sentry-dsn }}
-        VITE_SENTRY_ENVIRONMENT: ${{ inputs.vite-sentry-environment }}
-        VITE_SENTRY_RELEASE: ${{ inputs.vite-sentry-release }}
-        SENTRY_AUTH_TOKEN: ${{ inputs.sentry-auth-token }}
-        SENTRY_ORG: ${{ inputs.sentry-org }}
-        SENTRY_PROJECT: ${{ inputs.sentry-project }}
+        VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+        VITE_SENTRY_ENVIRONMENT: production
+        VITE_SENTRY_RELEASE: isinkwa_sethu@${{ github.sha }}
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+        SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
       run: npm run build
 
     - name: Trigger Render frontend deploy hook and wait
