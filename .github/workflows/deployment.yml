@@ -37,6 +37,12 @@ jobs:
         with:
           deploy-hook: ${{ env.FRONTEND_DEPLOY_HOOK }}
           api-url: ${{ env.PRODUCTION_API_URL }}
+          vite-sentry-dsn: ${{ secrets.VITE_SENTRY_DSN }}
+          vite-sentry-environment: production
+          vite-sentry-release: isinkwa_sethu@${{ github.sha }}
+          sentry-auth-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          sentry-org: ${{ secrets.SENTRY_ORG }}
+          sentry-project: ${{ secrets.SENTRY_PROJECT }}
 
       - name: Deploy backend (Docker)
         if: ${{ env.BACKEND_DEPLOY_HOOK != '' }}

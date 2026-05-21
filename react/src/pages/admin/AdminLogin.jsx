@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { SpinnerWithLabel } from '@/components/ui/spinner'
 import { useAdminAuth } from '@/contexts/AdminAuthContext'
+import { addBreadcrumb } from '@/lib/sentry'
 
 export default function AdminLogin() {
   const { isAuthenticated, login } = useAdminAuth()
@@ -21,6 +22,12 @@ export default function AdminLogin() {
   async function handleSubmit(event) {
     event.preventDefault()
     setError('')
+    addBreadcrumb({
+      message: 'Form submitted: Admin login',
+      category: 'ui.click',
+      level: 'info',
+      data: { screen: 'AdminLogin' },
+    })
     setLoading(true)
     try {
       await login(username, password)

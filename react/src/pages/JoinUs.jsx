@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import PageHero from '@/components/PageHero'
 import { SectionReveal, FadeItem } from '@/components/motion/SectionReveal'
+import { addBreadcrumb } from '@/lib/sentry'
 import {
   GENDER_OPTIONS,
   HOW_HEARD_OPTIONS,
@@ -77,6 +78,12 @@ export default function JoinUs() {
   async function handleSubmit(event) {
     event.preventDefault()
     setError('')
+    addBreadcrumb({
+      message: 'Form submitted: Join movement',
+      category: 'ui.click',
+      level: 'info',
+      data: { screen: 'JoinUs', province: form.province, gender: form.gender },
+    })
 
     const validationError = validateForm(form)
     if (validationError) {
