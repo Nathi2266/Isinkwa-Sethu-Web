@@ -26,18 +26,21 @@ export function initSentry() {
 
     integrations: [
       Sentry.browserTracingIntegration(),
+      // Session Replay integration with conservative defaults; can be tuned via env vars
       Sentry.replayIntegration({
         maskAllText: true,
         blockAllMedia: false,
       }),
     ],
 
+    // Performance & Replay sampling rates (configurable via env)
     tracesSampleRate: Number(import.meta.env.VITE_SENTRY_TRACES_SAMPLE_RATE || 0.2),
     replaysSessionSampleRate: Number(import.meta.env.VITE_SENTRY_REPLAY_SESSION_RATE || 0.1),
     replaysOnErrorSampleRate: Number(import.meta.env.VITE_SENTRY_REPLAY_ON_ERROR_RATE || 1.0),
 
     attachStacktrace: true,
-    sendDefaultPii: false,
+    // Allow opt-in for sending default PII via env (string 'true' required)
+    sendDefaultPii: import.meta.env.VITE_SENTRY_SEND_DEFAULT_PII === 'true',
     allowUrls: [window.location.origin],
   })
 }
@@ -78,7 +81,7 @@ export function addBreadcrumb({ message, category, level = 'info', data = {} }) 
  */
 export async function traced(operation, description, fn) {
   if (!sentryEnabled) return fn()
-  return Sentry.startSpan({ op: operation, name: description }, fn)
+  return Sentry.startSpan ? Sentry.startSpan({ op: operation, name: description }, fn) : fn()
 }
 
 export { Sentry }
