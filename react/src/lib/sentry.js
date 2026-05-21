@@ -43,6 +43,32 @@ export function initSentry() {
     sendDefaultPii: import.meta.env.VITE_SENTRY_SEND_DEFAULT_PII === 'true',
     allowUrls: [window.location.origin],
   })
+
+  // Global handlers: capture uncaught errors and unhandled promise rejections
+  if (typeof window !== 'undefined') {
+    window.addEventListener('error', (event) => {
+      try {
+        // event.error may be undefined for non-Error events
+        const err = event.error || new Error(event.message || 'Uncaught error')
+        if (err) Sentry.captureException(err)
+      } catch (e) {
+        // swallow to avoid infinite loops
+        // eslint-disable-next-line no-console
+        console.warn('[Sentry] failed to capture window error', e)
+      }
+    })
+
+    window.addEventListener('unhandledrejection', (event) => {
+      try {
+        const reason = event.reason
+        const err = reason instanceof Error ? reason : new Error(String(reason))
+        Sentry.captureException(err)
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.warn('[Sentry] failed to capture unhandledrejection', e)
+      }
+    })
+  }
 }
 
 /**
